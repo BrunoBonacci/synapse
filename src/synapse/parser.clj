@@ -33,7 +33,7 @@
        identity}))
 
 
-(def tree-walk
+(def tree-walk-transform
   (partial insta/transform
      {:port
       (fn [p] {:port p})
@@ -52,18 +52,11 @@
 
       :docker_spec
       (fn [& args]
-        (if (= "docker" (first args))
-          (apply merge {:resolver :docker} (rest args))
-          (apply merge {:resolver :docker} args)))
-
-      :env_var
-      (fn [x] {:target x})
+        (apply merge {:resolver :docker} args))
 
       :env_spec
       (fn [& args]
-        (if (= "env" (first args))
-          (apply merge {:resolver :env :link-type :single} (rest (rest args)))
-          (apply merge {:resolver :env :link-type :single} args)))
+        (apply merge {:resolver :env :link-type :single} args))
 
       :spec
       identity}))
@@ -71,12 +64,14 @@
 
 (defn parse [spec]
   (let [out ((parser) spec)]
-    (tree-walk out)))
+    (tree-walk-transform out)))
 
 
 (comment
 
   (parse ">>zookeeper.*:2181")
-  (-> ((parser) "env>R23"))
+  (-> ((parser) "R23"))
+  (parse "env>>R23.*")
+
 
   )

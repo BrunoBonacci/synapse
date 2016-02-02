@@ -1,5 +1,6 @@
 (ns synapse.docker
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str])
+  (:require [synapse.env :refer [candidates]]))
 
 (comment
   (defn env-from-file [file]
@@ -22,11 +23,7 @@
 (defn- candidates-links-style1
   [env link port]
   (let [;; finding CONTAINER_1_PORT_12345_TCP_ADDR style
-        addrs (filter
-               #(re-matches
-                 (re-pattern (str "(?i).*" link "_PORT_" port "_TCP_ADDR$"))
-                 (first %))
-               env)
+        addrs (candidates env (str ".*" link "_PORT_" port "_TCP_ADDR$"))
         ;; for a matched env var as above
         ;; find a matching CONTAINER_1_PORT_12345_TCP_PORT
         portname #(str/replace % #"_ADDR$" "_PORT")]
@@ -42,11 +39,7 @@
 (defn- candidates-links-style2
   [env link port]
   (let [;; finding CONTAINER_1_PORT_12345_TCP style
-        addrs (filter
-               #(re-matches
-                 (re-pattern (str "(?i).*" link "_PORT_" port "_TCP$"))
-                 (first %))
-               env)]
+        addrs (candidates env (str ".*" link "_PORT_" port "_TCP$"))]
     ;; for every matched env var return the candidate links
     (map
      (fn [[k v]]
@@ -58,9 +51,7 @@
 
 
 (defn lowest-link-port [env link]
-  (->> env
-       (filter
-        #(re-matches (re-pattern (str "(?i).*" link  "_PORT_[0-9]+_TCP(_ADDR)?")) (first %)))
+  (->> (candidates env (str ".*" link  "_PORT_[0-9]+_TCP(_ADDR)?"))
        (map #(->> % first (re-find #"(?i).*_PORT_([0-9]+)_TCP.*") second))
        (filter identity)
        (map to-num)

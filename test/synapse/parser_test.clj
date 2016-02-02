@@ -15,8 +15,8 @@
       (parse "env>ENV_VAR12")
       => {:resolver :env, :link-type :single, :target "ENV_VAR12"}
 
-      (parse "env>zookeeper")
-      => {:resolver :env, :link-type :single, :target "zookeeper"}
+      (parse "env>>zookeeper.*")
+      => {:resolver :env, :link-type :multiple, :target "zookeeper.*"}
 
       )
 

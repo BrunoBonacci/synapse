@@ -1,15 +1,15 @@
 spec          := docker_spec | env_spec
 
-env_spec      := ['env' single_link] env_var
+env_spec      := [<'env'> link_type] target
 
-docker_spec   := ['docker'] link_type target
+docker_spec   := [<'docker'>] link_type target
 
 target        := #"[^>:]+" [':' port]
 
 port          := #"[0-9]+"
 
 link_type     := multiple_link | single_link
-multiple_link := '>>'
-single_link   := '>'
+multiple_link := <'>>'>
+single_link   := <'>'>
 
-env_var       := #"[A-Za-z0-9_]+"
+
