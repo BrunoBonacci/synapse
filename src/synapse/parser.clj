@@ -71,6 +71,7 @@
 
   (parse ">>zookeeper.*:2181")
   (-> ((parser) "R23"))
+  (-> ((parser) "%%R23%%"))
   (parse "env>>R23.*")
 
 

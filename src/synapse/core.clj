@@ -3,7 +3,8 @@
   (:require [synapse.env :as env]
             [synapse.docker :as docker]
             [synapse.parser :refer [parse]]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [synapse.io :as io]))
 
 
 (defmulti resolve (fn [_ lnk] (:resolver lnk)))
@@ -13,9 +14,10 @@
   [env-map {:keys [link-type target]
             :or {link-type :single}}]
   (let [vars (map second (env/candidates env-map target))]
-    (if (= link-type :multiple)
-      (str/join "," vars)
-      (first (sort vars)))))
+    (when (seq vars)
+      (if (= link-type :multiple)
+        (str/join "," vars)
+        (first (sort vars))))))
 
 
 
@@ -26,17 +28,16 @@
                 (docker/candidates-links env-map target port)
                 (docker/candidates-links env-map target))
         endpoints (map (fn [{:keys [address port]}] (str address ":" port)) links)]
-    (if (= link-type :multiple)
-      (str/join "," endpoints)
-      (first (sort endpoints)))))
+    (when (seq endpoints)
+      (if (= link-type :multiple)
+        (str/join "," endpoints)
+        (first (sort endpoints))))))
 
 
 
 (defn resolvables
-  [text]
-  (->> text
-       (re-seq #"%%([^%]+)%%")
-       (map second)))
+  [template]
+  (re-seq #"%%[^%]+%%" template))
 
 
 (defn resolve-all [env-map resolvables]
@@ -46,8 +47,8 @@
 
 
 (defn template-replace-all [template resolvable-map]
-  (let [qr #(str/re-quote-replacement (str "%%" % "%%"))] ;; TODO: %% or not?
-    (reduce (fn [t [k v]] (str/replace t (qr k) v))
+  (let [qr #(str/re-quote-replacement %)]
+    (reduce (fn [t [k v]] (if v (str/replace t (qr k) v) t))
        template resolvable-map)))
 
 
@@ -55,6 +56,18 @@
   (let [to-resolve (resolvables template)
         resolve-map (resolve-all env-map to-resolve)]
     (template-replace-all template resolve-map)))
+
+
+(defn outfile-name [in-file]
+  (when in-file
+    (let [new-file (str/replace in-file #"\.tmpl$" "")]
+      (if (= in-file new-file) (str in-file ".out") new-file))))
+
+
+(defn resolve-file-template [env-map template-file outfile]
+  (let [template (io/read-file template-file)
+        output   (resolve-template env-map template)]
+    (io/write-file outfile output)))
 
 
 (comment
@@ -80,5 +93,10 @@
    env-map
    template)
 
+  (def tmpl "/tmp/config.edn.tmpl")
+  (def template (io/read-file tmpl))
+  (def env-map (into {} (System/getenv)))
+  (resolve-template env-map template)
+  (resolve-file-template env-map tmpl (outfile-name tmpl))
 
   )

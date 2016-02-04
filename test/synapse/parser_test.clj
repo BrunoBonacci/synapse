@@ -18,6 +18,15 @@
       (parse "env>>zookeeper.*")
       => {:resolver :env, :link-type :multiple, :target "zookeeper.*"}
 
+      (parse "%%ENV_VAR%%")
+      => {:resolver :env, :link-type :single, :target "ENV_VAR"}
+
+      (parse "%%env>ENV_VAR12%%")
+      => {:resolver :env, :link-type :single, :target "ENV_VAR12"}
+
+      (parse "%%env>>zookeeper.*%%")
+      => {:resolver :env, :link-type :multiple, :target "zookeeper.*"}
+
       )
 
 
@@ -43,6 +52,12 @@
       => {:resolver :docker, :link-type :multiple, :target "zookeeper", :port "2181"}
 
       (parse ">>zookeeper.*:2181")
+      => {:resolver :docker, :link-type :multiple, :target "zookeeper.*", :port "2181"}
+
+      (parse "%%docker>>zookeeper:2181%%")
+      => {:resolver :docker, :link-type :multiple, :target "zookeeper", :port "2181"}
+
+      (parse "%%>>zookeeper.*:2181%%")
       => {:resolver :docker, :link-type :multiple, :target "zookeeper.*", :port "2181"}
 
       )

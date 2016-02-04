@@ -1,10 +1,10 @@
-spec          := docker_spec | env_spec
+spec          := [<'%%'>] (docker_spec | env_spec) [<'%%'>]
 
 env_spec      := [<'env'> link_type] target
 
 docker_spec   := [<'docker'>] link_type target
 
-target        := #"[^>:]+" [':' port]
+target        := #"[^>:%]+" [':' port]
 
 port          := #"[0-9]+"
 

@@ -1,0 +1,46 @@
+                               synapse
+                    ==============================
+                        (C) Bruno Bonacci 2016
+                                v%%VERSION%%
+
+Description:
+------------
+
+  Synapse is the smart way to connect and configure docker containers.
+  It uses a number of strategies to retrieve configuration and
+  discover dependencies such as: environment variables, docker
+  standard variables (to come: Kubernetes discovery API, Consul
+  discovery API, Consul configuration API, etcd configuration API).
+
+  TODO: basic idea
+
+Usage:
+------
+  synapse [options] file1.tmpl file2.tmpl fileN.tmpl
+
+Options:
+--------
+  -h        This help screen
+  -v        Prints debug information to the stderr
+
+Tag Specifications:
+-------------------
+
+  TODO: all sort of tags
+
+Usage examples:
+---------------
+
+  * simple template parsing
+  $ synapse /etc/haproxy/haproxy.conf.tmpl
+
+  * if the user can't write the output file
+  $ cat /etc/haproxy/haproxy.conf.tmpl | \
+      synapse | sudo tee /etc/haproxy/haproxy.conf
+
+For more information please refer to:
+
+               https://github.com/BrunoBonacci/synapse
+
+Copyright © 2016 Bruno Bonacci
+Distributed under the Apache 2 License.

@@ -58,6 +58,15 @@
         {:resolver :env :link-type :single :target "VALUE.*"})
        => "1"
 
+
+       ;; multiple values but NO match
+       (resolve
+        {"VALUE1" "1"
+         "VALUE2" "2"
+         "VALUE3" "3"}
+        {:resolver :env :link-type :multiple :target "SOMETHING_ELSE.*"})
+       => nil
+
        )
 
 
@@ -119,6 +128,18 @@
          "DB3_PORT_12345_TCP_PORT" "3000"}
         {:resolver :docker :link-type :multiple :target "DB.*" :port "12345"})
        => "20.20.20.20:2000,10.10.10.10:1000,30.30.30.30:3000"
+
+
+       ;; multiple link with NO match
+       (resolve
+        {"DB2_PORT_12345_TCP_ADDR" "20.20.20.20"
+         "DB2_PORT_12345_TCP_PORT" "2000"
+         "DB1_PORT_12345_TCP_ADDR" "10.10.10.10"
+         "DB1_PORT_12345_TCP_PORT" "1000"
+         "DB3_PORT_12345_TCP_ADDR" "30.30.30.30"
+         "DB3_PORT_12345_TCP_PORT" "3000"}
+        {:resolver :docker :link-type :multiple :target "WEB.*" :port "12345"})
+       => nil
 
 
        ;; single link with multiple ports and a specific port
