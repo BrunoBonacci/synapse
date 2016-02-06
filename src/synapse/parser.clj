@@ -8,31 +8,6 @@
   (insta/parser (io/resource "parser-grammar.ebnf")))
 
 
-
-(->> ((parser) ">>zookeeper.*:2181")
-     (insta/transform
-      {:port
-       (fn [p] {:port p})
-
-       :target
-       (fn [t _ port]
-         (merge {:target t } port))
-
-       :link_type
-       (fn [[t]]
-         {:link-type
-          (case t :multiple_link :multiple :single_link :single)})
-
-       :docker_spec
-       (fn [_ & args]
-         (if (= "docker" (first args))
-           (apply merge {:resolver :docker} (rest args))
-           (apply merge {:resolver :docker} args)))
-
-       :spec
-       identity}))
-
-
 (def tree-walk-transform
   (partial insta/transform
      {:port
@@ -63,8 +38,10 @@
 
 
 (defn parse [spec]
-  (let [out ((parser) spec)]
-    (tree-walk-transform out)))
+  (let [result ((parser) spec)]
+    (if (insta/failure? result)
+      {:resolver :error :error :parsing :reason (insta/get-failure result)}
+      (tree-walk-transform result))))
 
 
 (comment
@@ -74,5 +51,5 @@
   (-> ((parser) "%%R23%%"))
   (parse "env>>R23.*")
 
-
+  (parse ">>>somethsoidhfa>>>asodifaoiwher")
   )

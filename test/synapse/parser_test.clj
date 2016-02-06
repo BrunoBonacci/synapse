@@ -61,3 +61,16 @@
       => {:resolver :docker, :link-type :multiple, :target "zookeeper.*", :port "2181"}
 
       )
+
+
+
+(facts "testing parser errors"
+
+       (-> "%%>>>%%" parse :error) => :parsing
+       (-> "%%%%" parse :error)    => :parsing
+       (-> "%%" parse :error)      => :parsing
+       (-> "%" parse :error)       => :parsing
+       (-> "" parse :error)        => :parsing
+
+
+       )

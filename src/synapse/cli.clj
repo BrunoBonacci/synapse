@@ -3,7 +3,8 @@
   (:require [clojure.tools.cli :refer [parse-opts]]
             [clojure.string :as str]
             [synapse.io :as io]
-            [synapse.core :refer :all])
+            [synapse.core :refer :all]
+            [synapse.util :refer [pretty-print-errors]])
   (:gen-class))
 
 
@@ -23,7 +24,7 @@
 (defn usage []
   (let [template (str "\n" (io/read-resource-file "help.txt"))
         version  (str/trim (io/read-resource-file "synapse.version"))]
-    (resolve-template {"VERSION" version} template)))
+    (:output (resolve-template {"VERSION" version} template))))
 
 
 (defn error-msg [errors]
@@ -31,11 +32,33 @@
        (str/join \newline errors)))
 
 
+
 (defn process-file [file]
-  (resolve-file-template
-   (io/environment-map)
-   file
-   (outfile-name file)))
+  (let [result (resolve-file-template
+                (io/environment-map)
+                file
+                (outfile-name file))]
+    (when (not= :ok (:resolution result))
+      (io/show-message
+       (pretty-print-errors (-> result :resolutions :fail) :file file)))
+    (:resolution result)))
+
+
+
+(defn main-process-files [files]
+  (let [results (set (map process-file files))]
+    (if (:with-errors results)
+      (io/exit 1 nil)
+      (io/exit 0 nil))))
+
+
+
+(defn main-process-stdin []
+  (let [result (resolve-template (io/environment-map) (io/read-stdin-all))]
+    (if (= :with-errors (:resolution result))
+      (io/exit 1 (pretty-print-errors (-> result :resolutions :fail)))
+      (do (println (:output result)) (io/exit 0 nil)))))
+
 
 
 (defn -main [& args]
@@ -46,7 +69,5 @@
       errors (io/exit 1 (error-msg errors)))
     ;; Execute program with options
     (if (seq arguments)
-      (doseq [tmpl arguments]
-        (process-file tmpl))
-      (println
-       (resolve-template (io/environment-map) (io/read-stdin-all))))))
+      (main-process-files arguments)
+      (main-process-stdin))))

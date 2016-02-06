@@ -30,6 +30,8 @@
 (defn show-message [& ms]
   (.println (System/err) (str/join " " (map str ms))))
 
+
 (defn exit [status msg]
-  (show-message msg)
+  (when msg
+    (show-message msg))
   (System/exit status))
