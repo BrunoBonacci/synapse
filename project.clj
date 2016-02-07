@@ -17,4 +17,6 @@
                    :plugins [[lein-midje "3.1.3"]
                              [lein-bin "0.3.5"]]}}
 
+  :bin {:name "synapse"}
+
 )

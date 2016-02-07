@@ -1,7 +1,7 @@
                                synapse
                     ==============================
                         (C) Bruno Bonacci 2016
-                                v%%VERSION%%
+                               v%%VERSION%%
 
 Description:
 ------------
