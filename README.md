@@ -36,10 +36,12 @@ Here some examples of resolvable tags (more to come):
 
 
 * `%%HOME%% %%env>HOME%% %%DATA_DIR%%`
+
 It will look for a matching environment variable,
 when found it will replace the tag with its value.
 
 * `%%env>>SERVICE.*%%`
+
 A double angular bracket (`>>`) means that you expect more
 than one result. It will look for environment variables
 like: `$SERVICE1`, `$SERVICE2`, `$SERVICE3` (matching
@@ -47,6 +49,7 @@ like: `$SERVICE1`, `$SERVICE2`, `$SERVICE3` (matching
 as a comma-separated list.
 
 * `%%docker>zookeeper%%`
+
 It will look for Docker's standard environment variables
 to link the container. For example it in this case it will
 look for: `$ZOOKEEPER_PORT_2181_TCP_ADDR`,
@@ -55,16 +58,19 @@ The docker resolution is the most commonly used so you can
 omit the `docker` resolver name.
 
 * `%%>zookeeper%%`
+
 When the port is not specified it will look for all available
 port names and take the lowest. A service might have more
 than one service port (such as admin port or peers port)
 but typically the client port is the lowest one.
 
 * `%%>zookeeper:2181%%`
+
 Otherwise you can specify the port you wish. This will be
 resolved and replaced with the actual container's port.
 
 * `%%>>zookeeper.*:2181%%`
+
 If you expect more than one container with a given name
 then you can specify a pattern and add a double angular
 bracket (`>>`). In this case it will look for all zookeeper
