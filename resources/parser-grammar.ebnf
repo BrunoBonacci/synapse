@@ -1,15 +1,23 @@
-spec          := [<'%%'>] (docker_spec | env_spec) [<'%%'>]
+spec          := [<'%%'>] (docker_spec / env_spec) [<'|'> default-value] [<'%%'>]
 
 env_spec      := [<'env'> link_type] target
 
-docker_spec   := [<'docker'>] link_type target
+docker_spec   := [<'docker'>] [options] link_type target
 
-target        := #"[^>:%]+" [':' port]
+options       := <'['> option ( <','> option )*  <']'>
+
+option        := addr-opt / port-opt
+addr-opt      := <'addr'>
+port-opt      := <'port'>
+
+target        := #"[^>:%|]+" [':' port]
 
 port          := #"[0-9]+"
 
 link_type     := multiple_link | single_link
 multiple_link := <'>>'>
 single_link   := <'>'>
+
+default-value := #"[^%]+"
 
 

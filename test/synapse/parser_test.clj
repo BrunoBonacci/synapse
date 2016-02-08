@@ -73,4 +73,51 @@
        (-> "" parse :error)        => :parsing
 
 
+       (-> "%%docker[>>zoo%%" parse :error)          => :parsing
+       (-> "%%docker[]>>zoo%%" parse :error)         => :parsing
+       (-> "%%docker]>>zoo%%" parse :error)          => :parsing
+       (-> "%%docker[blah]>>zoo%%" parse :error)     => :parsing
+       (-> "%%docker[addr;boo]>>zoo%%" parse :error) => :parsing
+       )
+
+
+
+(facts "testing options"
+
+       (-> (parse "%%[addr]>>zookeeper.*:2181%%") :options)
+       => {:addr true}
+
+       (-> (parse "%%docker[addr]>>zookeeper.*:2181%%") :options)
+       => {:addr true}
+
+       (-> (parse "%%[addr,port]>>zookeeper.*:2181%%") :options)
+       => {:addr true :port true}
+
+       (-> (parse "%%docker[addr,port]>>zookeeper.*:2181%%") :options)
+       => {:addr true :port true}
+
+       )
+
+
+
+(facts "testing default value"
+
+       (-> (parse "%%>>zookeeper.*:2181|default value%%") :default)
+       => "default value"
+
+       (-> (parse "%%docker[addr]>>zookeeper.*:2181|default value%%") :default)
+       => "default value"
+
+       (-> (parse "%%>>zookeeper.*:2181|1%%") :default)
+       => "1"
+
+       (-> (parse "%%>>zookeeper.*:2181|1:2%%") :default)
+       => "1:2"
+
+       (-> (parse "%%env>DATA_DIR|/data%%") :default)
+       => "/data"
+
+       (-> (parse "%%LOGS_DIR|/logs%%") :default)
+       => "/logs"
+
        )

@@ -20,6 +20,23 @@
         ([t _ port]
          (merge {:target t } port)))
 
+      :addr-opt
+      (fn [] {:addr true})
+
+      :port-opt
+      (fn [] {:port true})
+
+      :option
+      identity
+
+      :options
+      (fn [& opts]
+        {:options
+         (apply merge opts)})
+
+      :default-value
+      (fn [v] {:default v})
+
       :link_type
       (fn [[t]]
         {:link-type
@@ -34,7 +51,7 @@
         (apply merge {:resolver :env :link-type :single} args))
 
       :spec
-      identity}))
+      merge}))
 
 
 (defn parse [spec]
@@ -49,6 +66,9 @@
   (parse ">>zookeeper.*:2181")
   (-> ((parser) "R23"))
   (-> ((parser) "%%R23%%"))
+  (-> ((parser) ">>zookeeper.*:2181"))
+  (-> ((parser) "[addr,port]>>zookeeper.*:2181|some default value"))
+  (-> (parse "[addr,port]>>zookeeper.*:2181|some % default"))
   (parse "env>>R23.*")
 
   (parse ">>>somethsoidhfa>>>asodifaoiwher")
