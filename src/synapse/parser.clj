@@ -37,16 +37,16 @@
       :default-value
       (fn [v] {:default v})
 
-      :link_type
+      :link-type
       (fn [[t]]
         {:link-type
-         (case t :multiple_link :multiple :single_link :single)})
+         (case t :multiple-link :multiple :single-link :single)})
 
-      :docker_spec
+      :docker-spec
       (fn [& args]
         (apply merge {:resolver :docker} args))
 
-      :env_spec
+      :env-spec
       (fn [& args]
         (apply merge {:resolver :env :link-type :single} args))
 
@@ -63,13 +63,14 @@
 
 (comment
 
-  (parse ">>zookeeper.*:2181")
-  (-> ((parser) "R23"))
+  (parse "%%>>zookeeper.*:2181%%")
   (-> ((parser) "%%R23%%"))
-  (-> ((parser) ">>zookeeper.*:2181"))
-  (-> ((parser) "[addr,port]>>zookeeper.*:2181|some default value"))
-  (-> (parse "[addr,port]>>zookeeper.*:2181|some % default"))
-  (parse "env>>R23.*")
+  (-> ((parser) "%%R23|/opt%%"))
+  (-> (parse "%%R23|/opt%%"))
+  (-> ((parser) "%%>>zookeeper.*:2181%%"))
+  (-> ((parser) "%%[addr,port]>>zookeeper.*:2181|some default value%%"))
+  (-> (parse "%%[addr,port]>>zookeeper.*:2181|some default%%"))
+  (parse "%%env>>R23.*%%")
 
   (parse ">>>somethsoidhfa>>>asodifaoiwher")
   )

@@ -6,16 +6,16 @@
 
 (fact "env spec parsing"
 
-      (parse "HOME")
+      (parse "%%HOME%%")
       => {:resolver :env, :link-type :single, :target "HOME"}
 
-      (parse "ENV_VAR")
+      (parse "%%ENV_VAR%%")
       => {:resolver :env, :link-type :single, :target "ENV_VAR"}
 
-      (parse "env>ENV_VAR12")
+      (parse "%%env>ENV_VAR12%%")
       => {:resolver :env, :link-type :single, :target "ENV_VAR12"}
 
-      (parse "env>>zookeeper.*")
+      (parse "%%env>>zookeeper.*%%")
       => {:resolver :env, :link-type :multiple, :target "zookeeper.*"}
 
       (parse "%%ENV_VAR%%")
@@ -33,25 +33,25 @@
 
 (fact "docker spec parsing"
 
-      (parse ">zookeeper")
+      (parse "%%>zookeeper%%")
       => {:resolver :docker, :link-type :single, :target "zookeeper"}
 
-      (parse ">zookeeper:2181")
+      (parse "%%>zookeeper:2181%%")
       => {:resolver :docker, :link-type :single, :target "zookeeper", :port "2181"}
 
-      (parse "docker>zookeeper:2181")
+      (parse "%%docker>zookeeper:2181%%")
       => {:resolver :docker, :link-type :single, :target "zookeeper", :port "2181"}
 
-      (parse ">>zookeeper.*")
+      (parse "%%>>zookeeper.*%%")
       => {:resolver :docker, :link-type :multiple, :target "zookeeper.*"}
 
-      (parse ">>zookeeper:2181")
+      (parse "%%>>zookeeper:2181%%")
       => {:resolver :docker, :link-type :multiple, :target "zookeeper", :port "2181"}
 
-      (parse "docker>>zookeeper:2181")
+      (parse "%%docker>>zookeeper:2181%%")
       => {:resolver :docker, :link-type :multiple, :target "zookeeper", :port "2181"}
 
-      (parse ">>zookeeper.*:2181")
+      (parse "%%>>zookeeper.*:2181%%")
       => {:resolver :docker, :link-type :multiple, :target "zookeeper.*", :port "2181"}
 
       (parse "%%docker>>zookeeper:2181%%")
@@ -102,22 +102,27 @@
 
 (facts "testing default value"
 
-       (-> (parse "%%>>zookeeper.*:2181|default value%%") :default)
+       (-> (parse "%%>>zookeeper.*:2181||default value%%") :default)
        => "default value"
 
-       (-> (parse "%%docker[addr]>>zookeeper.*:2181|default value%%") :default)
+       (-> (parse "%%docker[addr]>>zookeeper.*:2181||default value%%") :default)
        => "default value"
 
-       (-> (parse "%%>>zookeeper.*:2181|1%%") :default)
+       (-> (parse "%%>>zookeeper.*:2181||1%%") :default)
        => "1"
 
-       (-> (parse "%%>>zookeeper.*:2181|1:2%%") :default)
+       (-> (parse "%%>>zookeeper.*:2181||1:2%%") :default)
        => "1:2"
 
-       (-> (parse "%%env>DATA_DIR|/data%%") :default)
+       (-> (parse "%%env>DATA_DIR||/data%%") :default)
        => "/data"
 
-       (-> (parse "%%LOGS_DIR|/logs%%") :default)
+       (-> (parse "%%LOGS_DIR||/logs%%") :default)
        => "/logs"
 
+       (-> (parse "%%LOGS_DIR||%%") :default)
+       => ""
+
+       (-> (parse "%%>>zookeeper.*:2181||%%") :default)
+       => ""
        )

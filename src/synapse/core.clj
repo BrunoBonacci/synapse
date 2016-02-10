@@ -7,6 +7,19 @@
             [synapse.io :as io]))
 
 
+(defn- apply-default [{:keys [default]} {:keys [resolved resolution] :as result}]
+  (if (and (= resolution :fail) (nil? resolved) default)
+    (assoc result :resolved default :resolution :default)
+    result))
+
+
+(defn- join-results [candidates link-type options]
+  (when (seq candidates)
+    (if (= link-type :multiple)
+      (str/join "," candidates)
+      (first (sort candidates)))))
+
+
 (defmulti resolve-with-meta (fn [_ lnk] (:resolver lnk)))
 
 
@@ -24,35 +37,45 @@
    (dissoc r :resolver)))
 
 
+
 (defmethod resolve-with-meta :env
-  [env-map {:keys [link-type target]
-            :or {link-type :single}}]
+  [env-map {:keys [link-type target options]
+            :or {link-type :single} :as spec}]
   (let [candidates (env/candidates env-map target)
         vars       (map second candidates)
-        resolved   (when (seq vars)
-                     (if (= link-type :multiple)
-                       (str/join "," vars)
-                       (first (sort vars))))]
-    {:resolved resolved
-     :resolution (if (seq vars) :ok :fail)
-     :sources candidates}))
+        resolved   (join-results vars link-type options)]
+    (apply-default spec
+                   {:resolved resolved
+                    :resolution (if (seq vars) :ok :fail)
+                    :sources candidates})))
 
 
 
 (defmethod resolve-with-meta :docker
-  [env-map {:keys [link-type target port]
-            :or {link-type :single} :as o}]
-  (let [links (if port
+  [env-map {:keys [link-type target port options]
+            :or {link-type :single} :as spec}]
+  (let [;; if no parts are specified then show both
+        options (if (and (nil? (:addr options)) (nil? (:port options)))
+                  (assoc options :addr true :port true)
+                  options)
+        ;; find candidates links
+        links (if port
                 (docker/candidates-links env-map target port)
                 (docker/candidates-links env-map target))
-        endpoints (map (fn [{:keys [address port]}] (str address ":" port)) links)
-        resolved (when (seq endpoints)
-                   (if (= link-type :multiple)
-                     (str/join "," endpoints)
-                     (first (sort endpoints))))]
-    {:resolved resolved
-     :resolution (if (seq endpoints) :ok :fail)
-     :sources links}))
+        ;; extract address or port or both
+        part-xtractor (fn [{:keys [address port]}]
+                        (->> [(and (:addr options) address)
+                              (and (:port options) port)]
+                             (filter identity)
+                             (str/join ":")))
+        ;; list of resolved endpoints
+        endpoints (map part-xtractor links)
+        resolved  (join-results endpoints link-type options)
+        ]
+    (apply-default spec
+                   {:resolved resolved
+                    :resolution (if (seq endpoints) :ok :fail)
+                    :sources links})))
 
 
 
@@ -130,7 +153,7 @@
   (docker/candidates-links env "zookeeper.*")
 
   (def template
-    "from: %%HOME%% -> [%%>>>zookeeper.*%%]")
+    "from: %%HOME1||/opt%% -> [%%[port]>>zookeeper.*%%] - [%%>>zookeeper.*%%]")
 
   (resolve-template
    env-map

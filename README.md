@@ -31,17 +31,18 @@ delimiter     |            port
 
 ```
 
+### Basics
 
 Here some examples of resolvable tags (more to come):
 
 
-* `%%HOME%% %%env>HOME%% %%DATA_DIR%%` 
+* `%%HOME%% %%env>HOME%% %%DATA_DIR%%`
 
   It will look for a matching environment variable,
   when found it will replace the tag with its value.
 
 * `%%env>>SERVICE.*%%`
-  A double angular bracket (`>>`) means that you expect more
+  A double angle bracket (`>>`) means that you expect more
   than one result. It will look for environment variables
   like: `$SERVICE1`, `$SERVICE2`, `$SERVICE3` (matching
   `SERVICE.*` regex) and replace the tag with the values
@@ -71,9 +72,35 @@ Here some examples of resolvable tags (more to come):
 * `%%>>zookeeper.*:2181%%`
 
   If you expect more than one container with a given name
-  then you can specify a pattern and add a double angular
+  then you can specify a pattern and add a double angle
   bracket (`>>`). In this case it will look for all zookeeper
   containers and replace the tag with a comma-separated list.
+
+
+### Default values
+
+* `%%DATA_DIR||//mnt/data%%`  or  `%%env>DATA_DIR||//mnt/data%%`, `%%>>zookeeper.*:2181||10.10.10.10:1221%%`
+
+  You can provide a default value which will be used in case
+  no matching candidate env vars are found. Just add `||`
+  (double pipe) followed by the default value. The default
+  value can be also empty which will resolve to an empty
+  string (eg: %%SOME_VAR||%%). This it can be useful
+  in cases when you want to resolve a value if given
+  but not fail it isn't set in the environment.
+
+
+### Partial resolution
+
+* `%%[addr]>>zookeeper.*:2181%%` or `%%[port]>zookeeper:2181%%`
+     => 172.17.0.2                     => 34765
+
+  In some cases it might be useful to get just the host address or
+  just the port number, for example when the configuration settings
+  require two separate entries. In such case just add `[addr]` or
+  `[port]` before the single or double angle bracket and the
+  resolver will emit just the part you are interested in.
+  Omitting this option is the same as `[addr,port]`
 
 
 ### The resolvers

@@ -248,3 +248,110 @@
 
 
        )
+
+
+(facts "resolve with default value"
+
+       (resolve
+        {}
+        {:resolver :env :target "DATA_DIR" :default "/data"})
+       => "/data"
+
+       (resolve-with-meta
+        {}
+        {:resolver :env :target "DATA_DIR" :default "/data"})
+       => {:resolved "/data", :resolution :default, :sources ()}
+
+       (resolve
+        {"DATA_DIR" "/mnt/data"}
+        {:resolver :env :target "DATA_DIR" :default "/data"})
+       => "/mnt/data"
+
+       (resolve-with-meta
+        {"DATA_DIR" "/mnt/data"}
+        {:resolver :env :target "DATA_DIR" :default "/data"})
+       => {:resolved "/mnt/data", :resolution :ok, :sources [["DATA_DIR" "/mnt/data"]]}
+
+
+       (resolve
+        {}
+        {:resolver :docker :target "database" :port 8998 :default "10.10.10.10:8765"})
+       => "10.10.10.10:8765"
+
+       (resolve-with-meta
+        {}
+        {:resolver :docker :target "database" :port 8998 :default "10.10.10.10:8765"})
+       => {:resolved "10.10.10.10:8765", :resolution :default, :sources ()}
+
+
+       (resolve
+        {"DATABASE_PORT_8998_TCP" "tcp://20.20.20.20:1234"}
+        {:resolver :docker :target "database" :port 8998 :default "10.10.10.10:8765"})
+       => "20.20.20.20:1234"
+
+
+       (resolve-with-meta
+        {"DATABASE_PORT_8998_TCP" "tcp://20.20.20.20:1234"}
+        {:resolver :docker :target "database" :port 8998 :default "10.10.10.10:8765"})
+       => {:resolved "20.20.20.20:1234",
+           :resolution :ok,
+           :sources
+           [{:link-name "database",
+             :link-port 8998,
+             :address "20.20.20.20",
+             :port 1234,
+             :source {"DATABASE_PORT_8998_TCP" "tcp://20.20.20.20:1234"}}]}
+       )
+
+
+
+(facts "testing docker addr and port options"
+
+
+       (resolve
+        {"DATABASE_PORT_8998_TCP" "tcp://20.20.20.20:1234"}
+        {:resolver :docker :target "database" :port 8998 :options {:addr true}})
+        => "20.20.20.20"
+
+
+        (resolve
+         {"DATABASE_PORT_8998_TCP" "tcp://20.20.20.20:1234"}
+         {:resolver :docker :target "database" :port 8998 :options {:port true}})
+        => "1234"
+
+
+        (resolve
+         {"DATABASE_PORT_8998_TCP" "tcp://20.20.20.20:1234"}
+         {:resolver :docker :target "database" :port 8998
+          :options {:addr true :port true}})
+        => "20.20.20.20:1234"
+
+
+        (resolve
+         {"DATABASE_PORT_8998_TCP" "tcp://20.20.20.20:1234"}
+         {:resolver :docker :target "database" :port 8998
+          :options {}})
+        => "20.20.20.20:1234"
+
+
+
+        (resolve
+         {"DATABASE2_PORT_8998_TCP" "tcp://20.20.20.20:1234"
+          "DATABASE1_PORT_8998_TCP" "tcp://10.10.10.10:1234"
+          "DATABASE3_PORT_8998_TCP" "tcp://30.30.30.30:1234"}
+         {:resolver :docker :target "database.*" :port 8998
+          :link-type :multiple :options {:addr true}})
+        => "20.20.20.20,10.10.10.10,30.30.30.30"
+
+
+
+        (resolve
+         {"DATABASE2_PORT_8998_TCP" "tcp://20.20.20.20:1234"
+          "DATABASE1_PORT_8998_TCP" "tcp://10.10.10.10:1234"
+          "DATABASE3_PORT_8998_TCP" "tcp://30.30.30.30:1234"}
+         {:resolver :docker :target "database.*" :port 8998
+          :link-type :multiple :options {:port true}})
+        => "1234,1234,1234"
+
+
+       )
