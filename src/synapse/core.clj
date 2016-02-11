@@ -163,4 +163,6 @@
   (def template (io/read-file tmpl))
   (def env-map (into {} (System/getenv)))
   (resolve-template env-map template)
-  (resolve-file-template env-map tmpl (outfile-name tmpl)))
+  (resolve-file-template env-map tmpl (outfile-name tmpl))
+
+  )

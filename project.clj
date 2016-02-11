@@ -13,10 +13,12 @@
 
   :main synapse.cli
 
-  :profiles {:dev {:dependencies [[midje "1.6.3"]]
+  :profiles {:uberjar {:aot :all}
+             :dev {:dependencies [[midje "1.6.3"]]
                    :plugins [[lein-midje "3.1.3"]
                              [lein-bin "0.3.5"]]}}
 
+  :jvm-opts ["-client" "-Dfile.encoding=utf-8"]
   :bin {:name "synapse"}
 
 )
