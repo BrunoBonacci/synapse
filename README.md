@@ -79,6 +79,8 @@ delimiter     |            port
   # you can use also with multiple targets
   %%[addr]>>els.*:9200%%     => 172.17.15.20,172.17.15.10,172.17.15.30
 
+  # you can customize the separtor with
+  %%[addr,sep=;]>>els.*:9200%% => 172.17.15.20;172.17.15.10;172.17.15.30
 ```
 
 ### Basics
@@ -141,9 +143,9 @@ Here some examples of resolvable tags (more to come):
   but not fail it isn't set in the environment.
 
 
-### Partial resolution
+### Partial resolution and other options
 
-* `%%[addr]>>zookeeper.*:2181%%` (=> `172.17.0.2`) or `%%[port]>zookeeper:2181%%` (=> `34765`)
+* `%%[addr]>zookeeper.*:2181%%` (=> `172.17.0.2`) or `%%[port]>zookeeper:2181%%` (=> `34765`)
 
   In some cases it might be useful to get just the host address or
   just the port number, for example when the configuration settings
@@ -151,6 +153,13 @@ Here some examples of resolvable tags (more to come):
   `[port]` before the single or double angle bracket and the
   resolver will emit just the part you are interested in.
   Omitting this option is the same as `[addr,port]`
+
+* `%%[sep=;]>>zookeeper.*:2181%%`
+
+  You can customize the separator by adding `sep=` followed by the
+  separator you wish to add. It can be empty, a single character or a
+  string. `\n` and `\t` will be unescaped while the comma (`,`)
+  is not supported as it is the default separator.
 
 
 ### The resolvers
