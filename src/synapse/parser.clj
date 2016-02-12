@@ -1,7 +1,13 @@
 (ns synapse.parser
   (:require [instaparse.core :as insta]
-            [clojure.java.io :as io]))
+            [clojure.java.io :as io]
+            [clojure.string :as str]))
 
+
+(defn- unescape [s]
+  (-> s
+      (str/replace #"\\n" "\n")
+      (str/replace #"\\t" "\t")))
 
 
 (defn parser []
@@ -25,6 +31,10 @@
 
       :port-opt
       (fn [] {:port true})
+
+      :sep-opt
+      (fn ([] {:separator ""})
+        ([sep] {:separator (unescape sep)}))
 
       :option
       identity
@@ -68,8 +78,8 @@
   (-> ((parser) "%%R23|/opt%%"))
   (-> (parse "%%R23|/opt%%"))
   (-> ((parser) "%%>>zookeeper.*:2181%%"))
-  (-> ((parser) "%%[addr,port]>>zookeeper.*:2181|some default value%%"))
-  (-> (parse "%%[addr,port]>>zookeeper.*:2181|some default%%"))
+  (-> ((parser) "%%[addr,port]>>zookeeper.*:2181||some default value%%"))
+  (-> (parse "%%[addr,port,sep=;]>>zookeeper.*:2181||some default%%"))
   (parse "%%env>>R23.*%%")
 
   (parse ">>>somethsoidhfa>>>asodifaoiwher")

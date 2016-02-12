@@ -10,21 +10,23 @@
 
 (def cli-options
   ;; An option with a required argument
-  [
-   ;; verbose output
-   ["-v" nil "Print debug information"
-    :id :verbosity
-    :default 0
-    :assoc-fn (fn [m k _] (update-in m [k] inc))]
-
-   ;; A boolean option defaulting to nil
-   ["-h" "--help"]])
+  [["-d" "--debug"   "Print debug information"]
+   ["-h" "--help"]
+   ["-v" "--version" "Print version info."]
+   ])
 
 
 (defn usage []
   (let [template (str "\n" (io/read-resource-file "help.txt"))
         version  (str/trim (io/read-resource-file "synapse.version"))]
-    (:output (resolve-template {"VERSION" version} template))))
+    (-> (resolve-template {"VERSION" version} template)
+        :output
+        (str/replace #"\$\$" "%%") )))
+
+
+(defn version []
+  (let [version  (str/trim (io/read-resource-file "synapse.version"))]
+    (str "synapse-" version)))
 
 
 (defn error-msg [errors]
@@ -60,12 +62,12 @@
       (do (println (:output result)) (io/exit 0 nil)))))
 
 
-
 (defn -main [& args]
   (let [{:keys [options arguments errors summary]} (parse-opts args cli-options)]
     ;; Handle help and error conditions
     (cond
       (:help options)          (io/exit 0 (usage))
+      (:version options)       (io/exit 0 (version))
       errors (io/exit 1 (error-msg errors)))
     ;; Execute program with options
     (if (seq arguments)

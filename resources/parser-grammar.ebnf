@@ -1,14 +1,15 @@
 spec          := <'%%'> (docker-spec / env-spec) [<'||'> default-value] <'%%'>
 
-env-spec      := [<'env'> link-type] target
+env-spec      := [<'env'> [options] link-type] target
 
 docker-spec   := [<'docker'>] [options] link-type target
 
 options       := <'['> option ( <','> option )*  <']'>
 
-option        := addr-opt / port-opt
+option        := addr-opt / port-opt / sep-opt
 addr-opt      := <'addr'>
 port-opt      := <'port'>
+sep-opt       := <'sep='> #"[^\],]*"
 
 target        := #"[^>:%|]+" [':' port]
 

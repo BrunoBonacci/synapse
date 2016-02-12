@@ -355,3 +355,32 @@
 
 
        )
+
+
+
+
+
+
+(facts "testing separator option"
+
+
+        (resolve
+         {"DATABASE2_PORT_8998_TCP" "tcp://20.20.20.20:1234"
+          "DATABASE1_PORT_8998_TCP" "tcp://10.10.10.10:1234"
+          "DATABASE3_PORT_8998_TCP" "tcp://30.30.30.30:1234"}
+         {:resolver :docker :target "database.*" :port 8998
+          :link-type :multiple :options {:addr true :separator ";"}})
+        => "20.20.20.20;10.10.10.10;30.30.30.30"
+
+
+
+        (resolve
+         {"DATABASE2_PORT_8998_TCP" "tcp://20.20.20.20:1234"
+          "DATABASE1_PORT_8998_TCP" "tcp://10.10.10.10:1234"
+          "DATABASE3_PORT_8998_TCP" "tcp://30.30.30.30:1234"}
+         {:resolver :env :target "database.*"
+          :link-type :multiple :options {:separator "\n"}})
+        => "tcp://20.20.20.20:1234\ntcp://10.10.10.10:1234\ntcp://30.30.30.30:1234"
+
+
+       )

@@ -82,7 +82,7 @@
 
 
 
-(facts "testing options"
+(facts "testing options: addr and port"
 
        (-> (parse "%%[addr]>>zookeeper.*:2181%%") :options)
        => {:addr true}
@@ -98,6 +98,40 @@
 
        )
 
+
+
+(facts "testing options: separator"
+
+       (-> (parse "%%[sep=;]>>zookeeper.*:2181%%") :options)
+       => {:separator ";"}
+
+       (-> (parse "%%[sep=any]>>zookeeper.*:2181%%") :options)
+       => {:separator "any"}
+
+       (-> (parse "%%[sep=]>>zookeeper.*:2181%%") :options)
+       => {:separator ""}
+
+       (-> (parse "%%[sep=|]>>zookeeper.*:2181%%") :options)
+       => {:separator "|"}
+
+       (-> (parse "%%[sep=\n]>>zookeeper.*:2181%%") :options)
+       => {:separator "\n"}
+
+       ;; \n and \t are un-escaped
+       (-> (parse "%%[sep=\\n]>>zookeeper.*:2181%%") :options)
+       => {:separator "\n"}
+
+       (-> (parse "%%[sep=\\t]>>zookeeper.*:2181%%") :options)
+       => {:separator "\t"}
+
+       ;; comma is not support as it is the default
+       (-> (parse "%%[sep=,addr]>>zookeeper.*:2181%%") :options)
+       => {:separator "" :addr true}
+
+       (-> (parse "%%env[sep=:]>>zookeeper.*%%") :options)
+       => {:separator ":"}
+
+       )
 
 
 (facts "testing default value"

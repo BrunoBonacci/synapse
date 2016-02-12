@@ -13,10 +13,11 @@
     result))
 
 
-(defn- join-results [candidates link-type options]
+(defn- join-results [candidates link-type {:keys [separator]
+                                           :or {separator ","} :as options}]
   (when (seq candidates)
     (if (= link-type :multiple)
-      (str/join "," candidates)
+      (str/join separator candidates)
       (first (sort candidates)))))
 
 

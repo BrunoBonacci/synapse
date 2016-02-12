@@ -24,8 +24,9 @@ Usage:
 
 Options:
 --------
-  -h        This help screen
-  -v        Prints debug information to the stderr
+  -d   --debug     Prints debug information to the stderr
+  -h   --help      This help screen
+  -v   --version   Prints version information to the stderr
 
 Tag Specifications:
 -------------------
@@ -77,13 +78,13 @@ Tag Specifications:
   bracket (`>>`). In this case it will look for all zookeeper
   containers and replace the tag with a comma-separated list.
 
-  %%DATA_DIR||//mnt/data%% or %%env>DATA_DIR||//mnt/data%% and
-  %%>>zookeeper.*:2181||10.10.10.10:1221%%
+  $$DATA_DIR||/mnt/data$$ or $$env>DATA_DIR||/mnt/data$$ and
+  $$>>zookeeper.*:2181||10.10.10.10:1221$$
   You can provide a default value which will be used in case
   no matching candidate env vars are found. Just add `||`
   (double pipe) followed by the default value. The default
   value can be also empty which will resolve to an empty
-  string (eg: %%SOME_VAR||%%). This it can be useful
+  string (eg: $$SOME_VAR||$$). This it can be useful
   in cases when you want to resolve a value if given
   but not fail it isn't set in the environment.
 
