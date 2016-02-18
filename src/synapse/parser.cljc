@@ -1,6 +1,5 @@
 (ns synapse.parser
   (:require [instaparse.core :as insta]
-            [clojure.java.io :as io]
             [clojure.string :as str]))
 
 
@@ -10,8 +9,35 @@
       (str/replace #"\\t" "\t")))
 
 
+(def grammar
+  "
+  spec          := <'%%'> (docker-spec / env-spec) [<'||'> default-value] <'%%'>
+
+  env-spec      := [<'env'> [options] link-type] target
+
+  docker-spec   := [<'docker'>] [options] link-type target
+
+  options       := <'['> option ( <','> option )*  <']'>
+
+  option        := addr-opt / port-opt / sep-opt
+  addr-opt      := <'addr'>
+  port-opt      := <'port'>
+  sep-opt       := <'sep='> #'[^\\],]*'
+
+  target        := #'[^>:%|]+' [':' port]
+
+  port          := #'[0-9]+'
+
+  link-type     := multiple-link | single-link
+  multiple-link := <'>>'>
+  single-link   := <'>'>
+
+  default-value := #'[^%]*'
+
+")
+
 (defn parser []
-  (insta/parser (io/resource "parser-grammar.ebnf")))
+  (insta/parser grammar))
 
 
 (def tree-walk-transform
@@ -75,8 +101,8 @@
 
   (parse "%%>>zookeeper.*:2181%%")
   (-> ((parser) "%%R23%%"))
-  (-> ((parser) "%%R23|/opt%%"))
-  (-> (parse "%%R23|/opt%%"))
+  (-> ((parser) "%%R23||/opt%%"))
+  (-> (parse "%%R23||/opt%%"))
   (-> ((parser) "%%>>zookeeper.*:2181%%"))
   (-> ((parser) "%%[addr,port]>>zookeeper.*:2181||some default value%%"))
   (-> (parse "%%[addr,port,sep=;]>>zookeeper.*:2181||some default%%"))

@@ -1,6 +1,6 @@
 (ns synapse.docker
-  (:require [clojure.string :as str])
-  (:require [synapse.env :refer [candidates]]))
+  (:require [clojure.string :as str]
+            [synapse.env :refer [candidates]]))
 
 (comment
   (defn env-from-file [file]

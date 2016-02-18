@@ -1,11 +1,12 @@
 (ns synapse.cli
   (:refer-clojure :exclude [resolve])
-  (:require [clojure.tools.cli :refer [parse-opts]]
+  (:require #?(:clj  [clojure.tools.cli :refer [parse-opts]]
+               :cljs [cljs.tools.cli :refer [parse-opts]])
             [clojure.string :as str]
             [synapse.io :as io]
-            [synapse.core :refer :all]
-            [synapse.util :refer [pretty-print-errors]])
-  (:gen-class))
+            [synapse.core :refer [resolve-template resolve-file-template
+                                  outfile-name]]
+            [synapse.util :refer [pretty-print-errors]]))
 
 
 (def cli-options
@@ -62,7 +63,7 @@
       (do (println (:output result)) (io/exit 0 nil)))))
 
 
-(defn -main [& args]
+(defn -main-cmd-line [& args]
   (let [{:keys [options arguments errors summary]} (parse-opts args cli-options)]
     ;; Handle help and error conditions
     (cond
