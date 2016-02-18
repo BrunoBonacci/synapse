@@ -1,4 +1,4 @@
-(defproject com.brunobonacci/synapse (-> "resources/synapse.version" slurp .trim)
+(defproject com.brunobonacci/synapse "0.2.0"
 
   :description "Smart container linking system for Docker, Kubernetes et al."
 

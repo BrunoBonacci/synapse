@@ -25,11 +25,6 @@
 
 
 ;; TODO: fix this for cljs
-(defn read-resource-file [file]
-  ;;(slurp (io/resource file))
-  )
-
-;; TODO: fix this for cljs
 (defn read-stdin-by-line []
   ;;(line-seq (java.io.BufferedReader. *in*))
   [])
