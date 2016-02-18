@@ -117,7 +117,7 @@ Tag Specifications:
   %%[sep=;]>>zookeeper.*:2181%%
   You can customize the separator by adding `sep=` followed by the
   separator you wish to add. It can be empty, a single character or a
-  string. `\n` and `\t` will be unescaped while the comma (`,`)
+  string. `\\n` and `\\t` will be unescaped while the comma (`,`)
   is not supported as it is the default separator.
 
 
@@ -137,7 +137,6 @@ For more information please refer to:
 
 Copyright © 2016 Bruno Bonacci
 Distributed under the Apache 2 License.
-
 ")
 
 

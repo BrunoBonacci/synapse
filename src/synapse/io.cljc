@@ -36,7 +36,8 @@
 
 (defn show-message [& ms]
   #?(:clj  (.println (System/err) (str/join " " (map str ms)))
-     :cljs (.write   (.-stderr nodejs/process) (str/join " " (map str ms) "\n"))))
+     :cljs (.write   (.-stderr nodejs/process)
+                     (str (str/join " " (map str ms)) "\n"))))
 
 
 (defn exit [status msg]
