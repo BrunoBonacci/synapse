@@ -208,6 +208,6 @@ list of their values.
 
 ## License
 
-Copyright © 2015 Bruno Bonacci
+Copyright © 2016 Bruno Bonacci
 
 Distributed under the Apache 2 License.
