@@ -9,7 +9,7 @@
 
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/clojurescript "1.7.228"]
-                 [com.lucasbradstreet/instaparse-cljs "1.4.1.0"]
+                 [com.lucasbradstreet/instaparse-cljs "1.4.1.0"] ;; clojurescript port
                  [org.clojure/tools.cli "0.3.3"]]
 
   :main synapse.main

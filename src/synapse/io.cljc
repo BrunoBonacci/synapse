@@ -4,6 +4,7 @@
             [clojure.string :as str]))
 
 
+
 (defn environment-map []
   (into {}
         #?(:clj  (System/getenv)
@@ -12,10 +13,12 @@
                         (.keys js/Object env))))))
 
 
+
 (defn read-file [file]
   #?(:clj  (slurp file)
      :cljs (let [fs (nodejs/require "fs")]
              (.readFileSync fs file "utf8"))))
+
 
 
 (defn write-file [file content]
@@ -24,20 +27,36 @@
              (.writeFileSync fs file content "utf8"))))
 
 
-;; TODO: fix this for cljs
-(defn read-stdin-by-line []
-  ;;(line-seq (java.io.BufferedReader. *in*))
-  [])
 
+(defn on-stdin-by-line [f-line f-end]
+  #?(:clj
+     (let [results (atom [])]
+       (doseq [line (line-seq (java.io.BufferedReader. *in*))]
+         (let [r (f-line line)]
+           (swap! results conj r)))
+       (f-end @results))
 
-(defn read-stdin-all []
-  (str/join "\n" (read-stdin-by-line)))
+     :cljs
+     (let [rd (nodejs/require "readline")
+           rl (.createInterface rd (clj->js {:input  (.-stdin  js/process)
+                                             :output (.-stdout js/process)}))
+           results (atom [])]
+       (doto rl
+         (.setPrompt "")
+         (.on "line"  (fn [line]
+                        (let [r (f-line line)]
+                          (swap! results conj r))
+                        (.prompt rl)))
+         (.on "close" (fn [] (f-end @results)))
+         (.prompt)))))
+
 
 
 (defn show-message [& ms]
   #?(:clj  (.println (System/err) (str/join " " (map str ms)))
      :cljs (.write   (.-stderr nodejs/process)
                      (str (str/join " " (map str ms)) "\n"))))
+
 
 
 (defn exit [status msg]
