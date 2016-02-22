@@ -201,9 +201,29 @@ so that if a particular node is down you can still connect to another one
 and oftentimes they are named as `DB` plus a number such as: `DB1`, `DB2`,
 `DB3` etc. If you want to get a comma-separated list of them you can
 just add another angle bracket `>` in the previous tag and give a pattern
-for the tag name like: `%%>>DB.*:5432`. Note the double angle brackets `>>`
+for the tag name like: `%%>>DB.*:5432%%`. Note the double angle brackets `>>`
 which means you expect more than one and you wish to get a comma-separated
 list of their values.
+
+
+## How to build it
+
+This project uses ClojureScript and Nodejs to build a executable.
+So make sure you have `npm` installed and `nexe` as well as the platform
+building tools `gc` etc.
+
+    brew install npm
+    npm install nexe
+
+Then build the executable with:
+
+    lein exe
+
+Which is just an alias for:
+
+    lein clean
+    lein cljsbuild once
+    nexe -i ./target/synapse.js -o ./target/synapse
 
 
 ## License

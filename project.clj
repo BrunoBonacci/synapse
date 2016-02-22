@@ -18,7 +18,29 @@
              :dev {:dependencies [[midje "1.6.3"]]
                    :plugins [[lein-midje "3.1.3"]]}}
 
-  :plugins [[lein-cljsbuild "1.1.2"]]
+  :plugins [[lein-cljsbuild "1.1.2"]
+            [lein-shell "0.5.0"]]
+
+
+  :aliases {"docker"
+            ["shell" "docker" "build" "-t" "brunobonacci/synapse:${:version}" "."]
+
+            "docker-latest"
+            ["shell" "docker" "build" "-t" "brunobonacci/synapse" "."]
+
+            "node"
+            ["do" "clean,"
+             "cljsbuild" "once"]
+
+            "exe"
+            ["do" "clean,"
+             "cljsbuild" "once,"
+             "shell" "nexe" "-f"
+             "-i" "./target/synapse.js"
+             "-o" "./target/exe/synapse-${:version}"
+             "-t" "./target/tmp/nexe"]
+            }
+
 
   :cljsbuild
   {:builds
