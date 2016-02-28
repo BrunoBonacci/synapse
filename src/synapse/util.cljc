@@ -1,5 +1,18 @@
 (ns synapse.util
-  (:require [clojure.string :as str]))
+  #?(:clj
+     (:require [clojure.string :as str])
+
+     :cljs
+     (:require [clojure.string :as str]
+               [goog.string :as gstring]
+               [goog.string.format])))
+
+#?(:cljs
+   ;; format is not available in clojurescript yet
+   (defn format
+     "Formats a string using goog.string.format."
+     [fmt & args]
+     (apply gstring/format fmt args)))
 
 
 (defn- list-template-error
@@ -12,7 +25,8 @@
                   (format (str "%-" max-size "s --> Couldn't be resolved.") k)
 
                   (and (= :parsing error))
-                  (format (str "%-" max-size "s --> Invalid resolvable tag. Please check help page.") k)
+                  (format (str "%-" max-size "s --> Invalid resolvable tag. "
+                               "Please check help page.") k)
 
                   :else
                   (format (str "%-" max-size "s --> Unrecognized error.") k))))
@@ -26,9 +40,22 @@
       (str/replace #"\n" (str "\n" file ": "))))
 
 
+(defn pretty-print-resolution-errors [result]
+  (let [errors   (-> result :resolutions :fail)
+        display (apply list-template-error errors)]
+    display))
 
-(defn pretty-print-errors [errors & {:keys [file]}]
-  (let [display (apply list-template-error errors)]
+
+(defn pretty-print-exception [exception]
+  (let [{:keys [error reason]} (ex-data exception)]
+    (str "" error ", reason: " reason)))
+
+
+(defn pretty-print-errors [result & {:keys [file]}]
+  (let [display (case (:resolution result)
+                  :ok ""
+                  :with-errors (pretty-print-resolution-errors result)
+                  :error (pretty-print-exception (:error result)))]
     (if file
       (prepend-file-name file display)
       display)))

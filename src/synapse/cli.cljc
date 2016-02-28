@@ -15,7 +15,7 @@
 
 (def cli-options
   ;; An option with a required argument
-  [["-d" "--debug"   "Print debug information"]
+  [;["-d" "--debug"   "Print debug information"]
    ["-h" "--help"]
    ["-v" "--version" "Print version info."]
    ])
@@ -41,21 +41,24 @@
                 (outfile-name file))]
     (when (not= :ok (:resolution result))
       (io/show-message
-       (pretty-print-errors (-> result :resolutions :fail) :file file)))
+       (pretty-print-errors result :file file)))
     (:resolution result)))
 
 
 
 (defn main-process-files [files]
   (let [results (set (map process-file files))]
-    (if (:with-errors results)
-      (io/exit 1 nil)
-      (io/exit 0 nil))))
+    (if (= #{:ok} results)
+      (io/exit 0 nil)
+      (io/exit 1 nil))))
 
 
 
 (defn-  process-line [line]
   (let [result (resolve-template (io/environment-map) line)]
+    (when (not= :ok (:resolution result))
+      (io/show-message
+       (pretty-print-errors result)))
     (println (:output result))
     result))
 
@@ -66,9 +69,9 @@
    process-line
    (fn [results]
      (let [results-set  (set (map :resolution results))]
-       (if (:with-errors results-set)
-         (io/exit 1 nil)
-         (io/exit 0 nil))))))
+       (if (= #{:ok} results-set)
+         (io/exit 0 nil)
+         (io/exit 1 nil))))))
 
 
 (defn -main-cmd-line [& args]

@@ -133,12 +133,18 @@
 
 
 (defn resolve-file-template [env-map template-file outfile]
-  (let [template (io/read-file template-file)
-        result   (resolve-template env-map template)]
-    (when (= :ok (:resolution result))
-      (io/write-file outfile (:output result)))
-    result))
-
+  (let [[template error] (io/read-file-or-error template-file)]
+    (if error
+      {:resolution :error
+       :error error}
+      (let [result   (resolve-template env-map template)]
+        (if (= :ok (:resolution result))
+          (let [[_ error] (io/write-file-or-error outfile (:output result))]
+            (if error
+              {:resolution :error
+               :error error}
+              result))
+          result)))))
 
 (comment
 
@@ -169,5 +175,6 @@
   (def env-map (into {} (System/getenv)))
   (resolve-template env-map template)
   (resolve-file-template env-map tmpl (outfile-name tmpl))
+  (resolve-file-template env-map "/tmp/test.txt.tmpl" "/ciao")
 
   )

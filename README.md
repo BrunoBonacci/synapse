@@ -212,8 +212,9 @@ This project uses ClojureScript and Nodejs to build a executable.
 So make sure you have `npm` installed and `nexe` as well as the platform
 building tools `gc` etc.
 
+    brew install node
     brew install npm
-    npm install nexe
+    npm install nexe -g
 
 Then build the executable with:
 
@@ -223,7 +224,7 @@ Which is just an alias for:
 
     lein clean
     lein cljsbuild once
-    nexe -i ./target/synapse.js -o ./target/synapse
+    nexe -f -i ./target/synapse.js -o ./target/synapse
 
 
 ## License
