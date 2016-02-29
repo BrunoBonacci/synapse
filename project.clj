@@ -1,4 +1,4 @@
-(defproject com.brunobonacci/synapse "0.2.0"
+(defproject com.brunobonacci/synapse "0.3.0-SNAPSHOT"
   ; when updating the version please update cli.clj as well.
   :description "Smart container linking system for Docker, Kubernetes et al."
 

@@ -1,10 +1,23 @@
 # synapse
 
+TODO: better explanation
+TODO: picture
+TODO: download links
+TODO: add executable jar
+
 Synapse is the smart way to connect and configure docker containers.
 It uses a number of strategies to retrieve configuration and discover
 dependencies such as: environment variables, docker standard variables
 (to come: Kubernetes discovery API, Consul discovery API, Consul
 configuration API, etcd configuration API).
+
+## Download
+
+Download last release here:
+
+  - [synapse for Linux x86_64](https://github.com/BrunoBonacci/synapse/releases/download/0.2.0/synapse-0.2.0-Linux-x86_64)
+  - [synapse for OS X x86_64](https://github.com/BrunoBonacci/synapse/releases/download/0.2.0/synapse-0.2.0-Darwin-x86_64)
+  - [synapse for Java8 (executable jar)](https://github.com/BrunoBonacci/synapse/releases/download/0.2.0/synapse-0.2.0-java8)
 
 
 ## Usage
