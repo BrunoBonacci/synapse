@@ -1,10 +1,5 @@
 # synapse
 
-TODO: better explanation
-TODO: picture
-TODO: download links
-TODO: add executable jar
-
 Synapse is the smart way to connect and configure docker containers.
 It uses a number of strategies to retrieve configuration and discover
 dependencies such as: environment variables, docker standard variables
