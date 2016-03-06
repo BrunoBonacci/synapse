@@ -1,4 +1,4 @@
-(defproject com.brunobonacci/synapse "0.3.0"
+(defproject com.brunobonacci/synapse "0.4.0-SNAPSHOT"
   ; when updating the version please update cli.clj as well.
   :description "Smart container linking system for Docker, Kubernetes et al."
 
@@ -10,7 +10,7 @@
   :sub
   ["synapse-core"
    "synapse-cli"
-   #_"synapse-lib"]
+   "synapse-lib"]
 
   :plugins [[lein-sub "0.3.0"]]
 
