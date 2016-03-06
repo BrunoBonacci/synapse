@@ -1,0 +1,48 @@
+
+  # Environment variable are replace with their value
+  $$HOME$$                   => %%HOME%%
+  $$env>HOME$$               => %%env>HOME%%
+
+  # A default value can be given with a double pipe (||)
+  $$HOME||/home/user1$$      => %%HOME||/home/user1%%
+  $$LOGS_DIR$$               => %%LOGS_DIR%%
+  $$LOGS_DIR||/var/logs$$    => %%LOGS_DIR||/var/logs%%
+
+  # When multiple environment are expected use a pattern
+  # together with a double angle bracket `>>` instead
+  # instead of the single angle bracket `>`
+  $$ALLOWED_IP1$$            => %%ALLOWED_IP1%%
+  $$ALLOWED_IP2$$            => %%ALLOWED_IP2%%
+  $$ALLOWED_IP3$$            => %%ALLOWED_IP3%%
+  $$env>>ALLOWED_IP.*$$      => %%env>>ALLOWED_IP.*%%
+  $$env>ALLOWED_IP.*$$       => %%env>ALLOWED_IP.*%%
+
+
+  # When resolving docker links use the docker resolver
+  $$docker>db:3306$$         => %%docker>db:3306%%
+  $$>db:3306$$               => %%>db:3306%%
+  $$docker>els1:9200$$       => %%docker>els1:9200%%
+  $$>els1:9200$$             => %%>els1:9200%%
+  $$>>els.*:9200$$           => %%>>els.*:9200%%
+
+  # ELS exposes two ports 9200, 9300, if not set the lowest is choosen
+  $$>>els.*$$                => %%>>els.*%%
+
+  # if you want only one address but multiple are matching
+  # the first is lexicographic order is returned.
+  $$>els.*:9200$$            => %%>els.*:9200%%
+
+  # defaults works in the same ways
+  $$>smtp:25||localhost:25$$ => %%>smtp:25||localhost:25%%
+
+  # you can resolve address and ports separately
+  $$[addr]>db:3306$$         => %%[addr]>db:3306%%
+  $$[port]>db:3306$$         => %%[port]>db:3306%%
+
+  # you can use also with multiple targets
+  $$[addr]>>els.*:9200$$     => %%[addr]>>els.*:9200%%
+
+  # you can customize the separtor with
+  $$[addr,sep=;]>>els.*:9200$$ => %%[addr,sep=;]>>els.*:9200%%
+
+  

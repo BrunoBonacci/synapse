@@ -8,12 +8,17 @@ configuration API, etcd configuration API).
 
 ## Download
 
-Download last release here:
+It comes in two forms: a command line tool, or a Clojure library:
 
-  - [synapse for Linux x86_64](https://github.com/BrunoBonacci/synapse/releases/download/0.2.0/synapse-0.2.0-Linux-x86_64)
-  - [synapse for OS X x86_64](https://github.com/BrunoBonacci/synapse/releases/download/0.2.0/synapse-0.2.0-Darwin-x86_64)
-  - [synapse for Java8 (executable jar)](https://github.com/BrunoBonacci/synapse/releases/download/0.2.0/synapse-0.2.0-java8)
+Download latest command line tool release here:
 
+  - [synapse for Linux x86_64](https://github.com/BrunoBonacci/synapse/releases/download/0.3.0/synapse-0.3.0-Linux-x86_64)
+  - [synapse for OS X x86_64](https://github.com/BrunoBonacci/synapse/releases/download/0.3.0/synapse-0.3.0-Darwin-x86_64)
+  - [synapse for Java8 (executable jar)](https://github.com/BrunoBonacci/synapse/releases/download/0.3.0/synapse-0.3.0-java8)
+
+Download the latest library version here:
+
+  - [synapse as Clojure library](https://clojars.org/com.brunobonacci/synapse)
 
 ## Usage
 
@@ -212,26 +217,61 @@ which means you expect more than one and you wish to get a comma-separated
 list of their values.
 
 
-## How to build it
+## Synapse library usage
 
-This project uses ClojureScript and Nodejs to build a executable.
-So make sure you have `npm` installed and `nexe` as well as the platform
-building tools `gc` etc.
+Synapse can be used as a Clojure library to configure your service.
+One way to use it is to create your configuration files as EDN files
+and place the resolvable tags in the places you wish to configure.
+For example you could replace `username` and `password` pairs with
+environment variables.
 
-    brew install node
-    brew install npm
-    npm install nexe -g
+Firstly add the dependency to your project dependencies:
 
-Then build the executable with:
+[![Clojars Project](https://img.shields.io/clojars/v/com.brunobonacci/synapse.svg)](https://clojars.org/com.brunobonacci/synapse)
 
-    lein exe
+    [com.brunobonacci/synapse "0.3.0"]
 
-Which is just an alias for:
+Then prepare a configuration file such as: `config.edn`
 
-    lein clean
-    lein cljsbuild once
-    nexe -f -i ./target/synapse.js -o ./target/synapse
+``` clojure
+{:database
+  {:host "%%>database:12345||localhost%%"
+   :username "%%DB_USER%%"
+   :password "%%DB_PASS%%"}}
+```
 
+Set in your environment the vars (or add a default):
+
+``` bash
+export DB_USER="your-user"
+export DB_PASS="secret"
+```
+
+In your program add the require:
+
+``` clojure
+(ns your.namspace
+  (:require [synapse.synapse :refer [load-config-file!]))
+
+```
+
+Now you can load the configuration file directly with:
+
+``` clojure
+(def config (load-config-file! "./config.edn"))
+
+;; => {:database {:host "localhost", :username "your-user", :password "secret"}}
+```
+
+If any error occur an exception will be thrown. If you don't want the exception
+to be thrown you can you use `load-config-file` (without bang `!`) which returns
+a vector of the configuration or `nil` and the error (as `[ config error ]`).
+
+``` clojure
+(let [[config error] (load-config-file "./config.edn"))]
+  config)
+;; => {:database {:host "localhost", :username "your-user", :password "secret"}}
+```
 
 ## License
 

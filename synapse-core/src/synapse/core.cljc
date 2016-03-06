@@ -145,36 +145,3 @@
                :error error}
               result))
           result)))))
-
-(comment
-
-  (defn env-from-file [file]
-    (->> file
-         slurp
-         str/split-lines
-         (map #(str/split % #"="))
-         (filter #(== 2 (count %)))
-         (into {})))
-
-
-  (def env-map (env-from-file "/tmp/env.sample"))
-
-  (resolve env-map {:resolver :docker :target "zookeeper.*" :link-type :multiple} )
-
-  (docker/candidates-links env "zookeeper.*")
-
-  (def template
-    "from: %%HOME1||/opt%% -> [%%[port]>>zookeeper.*%%] - [%%>>zookeeper.*%%]")
-
-  (resolve-template
-   env-map
-   template)
-
-  (def tmpl "/tmp/config.edn.tmpl")
-  (def template (io/read-file tmpl))
-  (def env-map (into {} (System/getenv)))
-  (resolve-template env-map template)
-  (resolve-file-template env-map tmpl (outfile-name tmpl))
-  (resolve-file-template env-map "/tmp/test.txt.tmpl" "/ciao")
-
-  )
