@@ -34,22 +34,23 @@ Which is just an alias for:
 
 Start with the java version:
 
-    mkdir -p /tmp/synapse
+    export VER=0.3.2
+    rm -fr mkdir -p /tmp/synapse && mkdir -p /tmp/synapse
     lein do clean, midje, bin
-    mv ./target/synapse /tmp/synapse/synapse-0.3.0-java8
+    mv ./target/synapse /tmp/synapse/synapse-$VER-java8
 
 Then build the Platform version (Mac OSX) with:
 
     lein exe
-    mv ./target/exe/synapse-0.3.0 /tmp/synapse/synapse-0.3.0-`uname -s`-`uname -m`
+    mv ./target/exe/synapse-$VER /tmp/synapse/synapse-$VER-`uname -s`-`uname -m`
 
 Finally build the linux version with:
 
     lein do clean, cljsbuild once, docker-latest
     # it will terminate immediately
     docker run brunobonacci/synapse bash
-    docker cp `docker ps -a | grep brunobonacci/synapse | awk '{print $1}'`:/opt/exe/synapse-Linux-x86_64 /tmp/synapselinux
-    mv /tmp/synapselinux/* /tmp/synapse/synapse-0.3.0-Linux-x86_64
+    docker cp `docker ps -a | grep brunobonacci/synapse | head -1| awk '{print $1}'`:/opt/exe/synapse-Linux-x86_64 /tmp/synapselinux
+    mv /tmp/synapselinux/* /tmp/synapse/synapse-$VER-Linux-x86_64
 
 
 ## License
