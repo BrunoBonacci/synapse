@@ -229,7 +229,7 @@ Firstly add the dependency to your project dependencies:
 
 [![Clojars Project](https://img.shields.io/clojars/v/com.brunobonacci/synapse.svg)](https://clojars.org/com.brunobonacci/synapse)
 
-    [com.brunobonacci/synapse "0.3.0"]
+    [com.brunobonacci/synapse "0.3.1"]
 
 Then prepare a configuration file such as: `config.edn`
 

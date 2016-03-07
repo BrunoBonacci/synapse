@@ -35,7 +35,7 @@
    It returns the configuration data or it raises an
    exception."
   ([config-file]
-   (load-config-file (sio/environment-map) config-file))
+   (load-config-file! (sio/environment-map) config-file))
   ([env-map config-file]
    (let [[result error] (load-config-file env-map config-file)]
      (if error
