@@ -1,0 +1,65 @@
+This test  is designed to  verify that the different  platform verison
+produce  the same  output  without  having platform-specific  variants
+which are unintended.
+
+To follow  a series of  resolvable tags which  will cover most  of the
+synapse  features so  that  output  of this  document  can be  checked
+against different versions.
+
+
+(*) Environment variable substituion
+  %%SIMPLE_VAR%%
+  %%simple_var%%  (case insensitive match)
+  %%env>SIMPLE_VAR%%
+  %%env>SIMPLE_.*%% with pattern matching
+
+(**) Env vars with default values
+  %%NO_VALUE||default used instead%%
+  %%env>NO_VALUE||default used instead%%
+  %%NO_VALUE%%
+
+(**) Joining multiple env vars
+  %%MULTI_VAR1%%,%%MULTI_VAR2%%,%%MULTI_VAR3%%
+  %%env>>MULTI_VAR.*%%
+  %%env>MULTI_VAR.*%%
+
+
+(*) Docker enviroment variable linking
+  - Single matching container with only one port
+    %%docker>single:3306%%
+    %%>single:3306%%
+
+  - Single matching container with multiple ports
+    %%docker>more_ports:9200%%
+    %%>more_ports:9200%%
+
+  - Single matching container with multiple ports and auto-select port
+    %%docker>more_ports%%
+    %%>more_ports%%
+
+  - Multiple matching containers with multple ports
+    %%>>multiple.*:9200%%
+
+  - Multiple matching containers with multple ports and auto-select port
+    %%>>multiple.*%%
+
+  - With default values
+    %%>no_match:12345||didntmatch:9876%%
+    %%>>no_match*:12345||didntmatch:9876%%
+
+  - With partial resolution
+    %%docker[addr]>single:3306%%
+    %%[port]>single:3306%%
+    %%[addr]>>multiple.*:9200%%
+    %%[port]>>multiple.*:9200%%
+    %%[addr,sep=;]>>multiple.*:9200%%
+
+
+(*) Unresolved links and vars
+  %%DOESNT_EXIST%%
+  %%>NOT_FOUND:123%%
+  %%[port]>NOT_FOUND:123%%
+
+Now  you should  try  to  resolve this  document  using the  different
+platform  specific implementation  and compare  against the  java one.
+All version should be the same.

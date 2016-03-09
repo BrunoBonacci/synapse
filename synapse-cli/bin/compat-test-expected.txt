@@ -1,0 +1,65 @@
+This test  is designed to  verify that the different  platform verison
+produce  the same  output  without  having platform-specific  variants
+which are unintended.
+
+To follow  a series of  resolvable tags which  will cover most  of the
+synapse  features so  that  output  of this  document  can be  checked
+against different versions.
+
+
+(*) Environment variable substituion
+  simple-value
+  simple-value  (case insensitive match)
+  simple-value
+  simple-value with pattern matching
+
+(**) Env vars with default values
+  default used instead
+  default used instead
+  %%NO_VALUE%%
+
+(**) Joining multiple env vars
+  multiple,env-var,matched
+  multiple,env-var,matched
+  env-var
+
+
+(*) Docker enviroment variable linking
+  - Single matching container with only one port
+    172.17.1.10:24123
+    172.17.1.10:24123
+
+  - Single matching container with multiple ports
+    172.17.2.10:123
+    172.17.2.10:123
+
+  - Single matching container with multiple ports and auto-select port
+    172.17.2.10:24123
+    172.17.2.10:24123
+
+  - Multiple matching containers with multple ports
+    172.17.3.20:9200,172.17.3.30:9200,172.17.3.10:9200
+
+  - Multiple matching containers with multple ports and auto-select port
+    172.17.3.20:9100,172.17.3.10:9100,172.17.3.30:9100
+
+  - With default values
+    didntmatch:9876
+    didntmatch:9876
+
+  - With partial resolution
+    172.17.1.10
+    24123
+    172.17.3.20,172.17.3.30,172.17.3.10
+    9200,9200,9200
+    172.17.3.20;172.17.3.30;172.17.3.10
+
+
+(*) Unresolved links and vars
+  %%DOESNT_EXIST%%
+  %%>NOT_FOUND:123%%
+  %%[port]>NOT_FOUND:123%%
+
+Now  you should  try  to  resolve this  document  using the  different
+platform  specific implementation  and compare  against the  java one.
+All version should be the same.

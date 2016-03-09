@@ -37,6 +37,16 @@
       result)))
 
 
+
+(defn to-num
+  "Convert a string into a number."
+  [n]
+  (when (not-empty n)
+    #?(:clj (Integer/parseInt n)
+       :cljs (js/parseInt n))))
+
+
+
 (defn environment-map []
   (into {}
         #?(:clj  (System/getenv)

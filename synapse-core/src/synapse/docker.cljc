@@ -1,23 +1,7 @@
 (ns synapse.docker
   (:require [clojure.string :as str]
-            [synapse.env :refer [candidates]]))
-
-(comment
-  (defn env-from-file [file]
-    (->> file
-         slurp
-         str/split-lines
-         (map #(str/split % #"="))
-         (filter #(== 2 (count %)))
-         (into {})))
-
-
-  (def env (env-from-file "/tmp/env.sample")))
-
-
-(defn to-num [n]
-  (when (not-empty n)
-    (Integer/parseInt n)))
+            [synapse.env :refer [candidates]]
+            [synapse.io  :refer [to-num]]))
 
 
 (defn- candidates-links-style1
