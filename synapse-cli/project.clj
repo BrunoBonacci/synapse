@@ -15,8 +15,12 @@
   :main synapse.main
 
   :profiles {:uberjar {:aot :all}
-             :dev {:dependencies [[midje "1.6.3"]]
-                   :plugins [[lein-midje "3.1.3"]]}}
+             :dev {:dependencies [[com.cemerick/piggieback "0.2.1"]
+                                  [org.clojure/tools.nrepl "0.2.10"]
+                                  [midje "1.6.3"]]
+                   :plugins [[lein-midje "3.1.3"]]
+                   :repl-options
+                   {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}}}
 
   :plugins [[lein-cljsbuild "1.1.2"]
             [lein-shell "0.5.0"]
