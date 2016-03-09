@@ -104,9 +104,13 @@
        (into {})))
 
 
-;; re-quote-pattern is not available in ClojureScript
+;; re-quote-replacement is not available in ClojureScript
 (defn re-quote-pattern [string]
-  (re-pattern (str/replace string #"([.?*+^$\[\]\\\(\){}|-])" "\\$1")))
+  #?(:clj
+     (str/re-quote-replacement string)
+
+     :cljs
+     (re-pattern (str/replace string #"([.?*+^$\[\]\\\(\){}|-])" "\\$1"))))
 
 
 (defn template-replace-all [template resolvable-map]
