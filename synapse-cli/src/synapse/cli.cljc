@@ -10,7 +10,7 @@
             [synapse.help :refer [help]]))
 
 
-(def ^:const VERSION "0.3.2")
+(def ^:const VERSION "0.3.3")
 (def ^:const FULL-VERSION (str "synapse-" VERSION))
 
 (def cli-options

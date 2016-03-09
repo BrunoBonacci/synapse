@@ -1,5 +1,9 @@
 # Synapse Changelog
 
+## Release v0.3.3 (2016-03-09)
+  * CORE: re-quote-pattern requires different patterns Java/Javascript :-(
+  * CORE: improved performance
+
 ## Release v0.3.2 (2016-03-07)
   * CORE: re-quote-pattern missing special char
 

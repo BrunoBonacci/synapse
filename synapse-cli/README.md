@@ -35,13 +35,16 @@ Which is just an alias for:
 Start with the java version:
 
     export VER=0.3.2
+    ../bin/bump-release.sh $VER
     rm -fr mkdir -p /tmp/synapse && mkdir -p /tmp/synapse
     lein do clean, midje, bin
+    ./bin/compat-test.sh ./target/synapse
     mv ./target/synapse /tmp/synapse/synapse-$VER-java8
 
 Then build the Platform version (Mac OSX) with:
 
     lein exe
+    ./bin/compat-test.sh ./target/exe/synapse-$VER
     mv ./target/exe/synapse-$VER /tmp/synapse/synapse-$VER-`uname -s`-`uname -m`
 
 Finally build the linux version with:
@@ -51,6 +54,10 @@ Finally build the linux version with:
     docker run brunobonacci/synapse bash
     docker cp `docker ps -a | grep brunobonacci/synapse | head -1| awk '{print $1}'`:/opt/exe/synapse-Linux-x86_64 /tmp/synapselinux
     mv /tmp/synapselinux/* /tmp/synapse/synapse-$VER-Linux-x86_64
+
+All done. All your release files are in `/tmp/synapse`.
+
+    ls -halp /tmp/synapse
 
 
 ## License

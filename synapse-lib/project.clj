@@ -1,4 +1,4 @@
-(defproject com.brunobonacci/synapse "0.3.2"
+(defproject com.brunobonacci/synapse "0.3.3"
 
   :description "Smart container linking system for Docker, Kubernetes et al."
 
@@ -8,7 +8,7 @@
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
 
   :dependencies [[org.clojure/clojure "1.7.0"]
-                 [com.brunobonacci/synapse-core "0.3.2"]
+                 [com.brunobonacci/synapse-core "0.3.3"]
                  ]
 
   :profiles {:dev {:dependencies [[midje "1.6.3"]]
