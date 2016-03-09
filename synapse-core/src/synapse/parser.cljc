@@ -36,8 +36,8 @@
 
 ")
 
-(defn parser []
-  (insta/parser grammar))
+
+(defonce parser (insta/parser grammar))
 
 
 (def tree-walk-transform
@@ -91,22 +91,7 @@
 
 
 (defn parse [spec]
-  (let [result ((parser) spec)]
+  (let [result (parser spec)]
     (if (insta/failure? result)
       {:resolver :error :error :parsing :reason (insta/get-failure result)}
       (tree-walk-transform result))))
-
-
-(comment
-
-  (parse "%%>>zookeeper.*:2181%%")
-  (-> ((parser) "%%R23%%"))
-  (-> ((parser) "%%R23||/opt%%"))
-  (-> (parse "%%R23||/opt%%"))
-  (-> ((parser) "%%>>zookeeper.*:2181%%"))
-  (-> ((parser) "%%[addr,port]>>zookeeper.*:2181||some default value%%"))
-  (-> (parse "%%[addr,port,sep=;]>>zookeeper.*:2181||some default%%"))
-  (parse "%%env>>R23.*%%")
-
-  (parse ">>>somethsoidhfa>>>asodifaoiwher")
-  )
