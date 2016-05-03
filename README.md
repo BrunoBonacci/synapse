@@ -12,9 +12,9 @@ It comes in two forms: a command line tool, or a Clojure library:
 
 Download latest command line tool release here:
 
-  - [synapse for Linux x86_64](https://github.com/BrunoBonacci/synapse/releases/download/0.3.2/synapse-0.3.2-Linux-x86_64)
-  - [synapse for OS X x86_64](https://github.com/BrunoBonacci/synapse/releases/download/0.3.2/synapse-0.3.2-Darwin-x86_64)
-  - [synapse for Java8 (executable jar)](https://github.com/BrunoBonacci/synapse/releases/download/0.3.2/synapse-0.3.2-java8)
+  - [synapse for Linux x86_64](https://github.com/BrunoBonacci/synapse/releases/download/0.3.3/synapse-0.3.3-Linux-x86_64)
+  - [synapse for OS X x86_64](https://github.com/BrunoBonacci/synapse/releases/download/0.3.3/synapse-0.3.3-Darwin-x86_64)
+  - [synapse for Java8 (executable jar)](https://github.com/BrunoBonacci/synapse/releases/download/0.3.3/synapse-0.3.3-java8)
 
 Download the latest library version here:
 
@@ -229,7 +229,7 @@ Firstly add the dependency to your project dependencies:
 
 [![Clojars Project](https://img.shields.io/clojars/v/com.brunobonacci/synapse.svg)](https://clojars.org/com.brunobonacci/synapse)
 
-    [com.brunobonacci/synapse "0.3.2"]
+    [com.brunobonacci/synapse "0.3.3"]
 
 Then prepare a configuration file such as: `config.edn`
 
