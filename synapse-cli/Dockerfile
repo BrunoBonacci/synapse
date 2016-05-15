@@ -11,4 +11,4 @@ RUN \
 
 ADD ./target/synapse.js /opt/synapse.js
 
-RUN nexe -f -i /opt/synapse.js -o /opt/exe/synapse-`uname -s`-`uname -m`
+RUN nexe -f -i /opt/synapse.js -o /opt/exe/synapse-`uname -s`-`uname -m` -r 5.9.1

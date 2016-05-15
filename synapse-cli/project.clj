@@ -43,6 +43,7 @@
              "shell" "nexe" "-f"
              "-i" "./target/synapse.js"
              "-o" "./target/exe/synapse-${:version}"
+             "-r" "5.9.1"
              "-t" "./target/tmp/nexe"]
             }
 
