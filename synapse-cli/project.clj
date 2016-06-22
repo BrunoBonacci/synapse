@@ -1,4 +1,4 @@
-(defproject com.brunobonacci/synapse-cli "0.3.3"
+(defproject com.brunobonacci/synapse-cli "0.3.4"
   ;; when updating the version please update cli.clj as well.
   :description "Smart container linking system for Docker, Kubernetes et al."
 
@@ -9,7 +9,7 @@
 
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/clojurescript "1.7.228"]
-                 [com.brunobonacci/synapse-core "0.3.3"]
+                 [com.brunobonacci/synapse-core "0.3.4"]
                  [org.clojure/tools.cli "0.3.3"]]
 
   :main synapse.main

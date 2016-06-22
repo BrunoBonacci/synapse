@@ -1,4 +1,4 @@
-(defproject com.brunobonacci/synapse-core "0.3.3"
+(defproject com.brunobonacci/synapse-core "0.3.4"
 
   :description "Smart container linking system for Docker, Kubernetes et al."
 
