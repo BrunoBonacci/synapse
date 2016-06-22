@@ -1,5 +1,8 @@
 # Synapse Changelog
 
+## Release v0.3.4 (2016-06-22)
+  * CLI - compile with alpine linux 3.3 + musl in fully static to avoid libc++ compat warning.
+
 ## Release v0.3.3 (2016-03-09)
   * CORE: re-quote-pattern requires different patterns Java/Javascript :-(
   * CORE: improved performance
