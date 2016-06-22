@@ -32,11 +32,15 @@ Which is just an alias for:
 
 ## To release
 
-Start with the java version:
+Bump the version:
 
     export VER=0.3.2
     ../bin/bump-release.sh $VER
-    rm -fr mkdir -p /tmp/synapse && mkdir -p /tmp/synapse
+    rm -fr /tmp/synapse && mkdir -p /tmp/synapse
+
+
+Start with the java version:
+
     lein do clean, midje, bin
     ./bin/compat-test.sh ./target/synapse
     mv ./target/synapse /tmp/synapse/synapse-$VER-java8
@@ -52,8 +56,7 @@ Finally build the linux version with:
     lein do clean, cljsbuild once, docker-latest
     # it will terminate immediately
     docker run brunobonacci/synapse bash
-    docker cp `docker ps -a | grep brunobonacci/synapse | head -1| awk '{print $1}'`:/opt/exe/synapse-Linux-x86_64 /tmp/synapselinux
-    mv /tmp/synapselinux/* /tmp/synapse/synapse-$VER-Linux-x86_64
+    docker cp `docker ps -a | grep brunobonacci/synapse | head -1| awk '{print $1}'`:/opt/exe/synapse /tmp/synapse/synapse-$VER-Linux-x86_64
 
 All done. All your release files are in `/tmp/synapse`.
 
