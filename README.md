@@ -12,13 +12,31 @@ It comes in two forms: a command line tool, or a Clojure library:
 
 Download latest command line tool release here:
 
-  - [synapse for Linux x86_64](https://github.com/BrunoBonacci/synapse/releases/download/0.3.4/synapse-0.3.4-Linux-x86_64)
-  - [synapse for OS X x86_64](https://github.com/BrunoBonacci/synapse/releases/download/0.3.4/synapse-0.3.4-Darwin-x86_64)
-  - [synapse for Java8 (executable jar)](https://github.com/BrunoBonacci/synapse/releases/download/0.3.4/synapse-0.3.4-java8)
+  - [synapse for Linux x86_64](https://github.com/BrunoBonacci/synapse/releases/download/0.4.0/synapse-Linux-x86_64)
+  - [synapse for OS X x86_64](https://github.com/BrunoBonacci/synapse/releases/download/0.4.0/synapse-Darwin-x86_64)
+  - [synapse for Java8 (executable jar)](https://github.com/BrunoBonacci/synapse/releases/download/0.4.0/synapse)
 
 Download the latest library version here:
 
   - [synapse as Clojure library](https://clojars.org/com.brunobonacci/synapse)
+
+## Installation
+
+  * Install command line tool (Native binary for Mac-OSX and Linux)
+  ``` bash
+  mkdir -p ~/bin
+  wget https://github.com/BrunoBonacci/synapse/releases/download/0.4.0/synapse-$(uname -s)-$(uname -m) -O ~/bin/synapse
+  chmod +x ~/bin/synapse
+  export PATH=~/bin:$PATH
+  ```
+
+  * Install command line tool (for Windows and other platforms, requires Java JRE)
+  ``` bash
+  mkdir -p ~/bin
+  wget https://github.com/BrunoBonacci/synapse/releases/download/0.4.0/synapse -O ~/bin/synapse
+  chmod +x ~/bin/synapse
+  export PATH=~/bin:$PATH
+  ```
 
 ## Usage
 
@@ -229,7 +247,7 @@ Firstly add the dependency to your project dependencies:
 
 [![Clojars Project](https://img.shields.io/clojars/v/com.brunobonacci/synapse.svg)](https://clojars.org/com.brunobonacci/synapse)
 
-    [com.brunobonacci/synapse "0.3.4"]
+    [com.brunobonacci/synapse "0.4.0"]
 
 Then prepare a configuration file such as: `config.edn`
 

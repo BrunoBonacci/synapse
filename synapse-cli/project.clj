@@ -1,4 +1,4 @@
-(defproject com.brunobonacci/synapse-cli "0.3.4"
+(defproject com.brunobonacci/synapse-cli "0.4.0"
   ;; when updating the version please update cli.clj as well.
   :description "Smart container linking system for Docker, Kubernetes et al."
 
@@ -7,56 +7,61 @@
   :license {:name "Apache License 2.0"
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
 
-  :dependencies [[org.clojure/clojure "1.7.0"]
-                 [org.clojure/clojurescript "1.7.228"]
-                 [com.brunobonacci/synapse-core "0.3.4"]
-                 [org.clojure/tools.cli "0.3.3"]]
+  :dependencies [[org.clojure/clojure "1.8.0"]
+                 [com.brunobonacci/synapse-core "0.4.0"]
+                 [org.clojure/tools.cli "0.4.2"]]
 
   :main synapse.main
 
   :profiles {:uberjar {:aot :all}
-             :dev {:dependencies [[com.cemerick/piggieback "0.2.1"]
-                                  [org.clojure/tools.nrepl "0.2.10"]
-                                  [midje "1.6.3"]]
-                   :plugins [[lein-midje "3.1.3"]]
+             :dev {:dependencies [[midje "1.9.8"]]
+                   :plugins [[lein-midje "3.2.1"]]
                    :repl-options
                    {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}}}
 
-  :plugins [[lein-cljsbuild "1.1.2"]
-            [lein-shell "0.5.0"]
-            [lein-bin "0.3.5"]]
+  :plugins [[lein-shell "0.5.0"]
+            [lein-binplus "0.6.5"]]
+
+  :uberjar-name "synapse-standalone.jar"
 
 
-  :aliases {"docker"
-            ["shell" "docker" "build" "-t" "brunobonacci/synapse:${:version}" "."]
+  :aliases
+  {;; Assumes local machine is a Mac
+   "native-mac"
+   ["shell"
+    "native-image" "--report-unsupported-elements-at-runtime"
+    "-jar" "target/synapse-standalone.jar"
+    "-H:Name=target/synapse-Darwin-x86_64" ]
 
-            "docker-latest"
-            ["shell" "docker" "build" "-t" "brunobonacci/synapse" "."]
+   ;; assumes container on Mac with /tmp shared with DockerVM
+   "native-linux"
+   ["do"
+    "shell" "mkdir" "-p" "/tmp/target/,"
+    "shell" "cp" "./target/synapse-standalone.jar" "/tmp/target/,"
+    "shell"
+    "docker" "run" "-v" "/tmp:/synapse" "findepi/graalvm:all"
+    "/graalvm/bin/native-image" "--report-unsupported-elements-at-runtime"
+    "-jar" "/synapse/target/synapse-standalone.jar"
+    "-H:Name=/synapse/target/synapse-Linux-x86_64,"
+    "shell" "cp" "/tmp/target/synapse-Linux-x86_64" "./target/"
 
-            "node"
-            ["do" "clean,"
-             "cljsbuild" "once"]
+    ;; docker run -ti -v /tmp:/synapse findepi/graalvm:all /bin/bash
+    ;; /graalvm/bin/native-image  --report-unsupported-elements-at-runtime -jar /synapse/target/synapse-standalone.jar -H:Name=/synapse/target/synapse-Linux-x86_64
+    ;;
+    ]
 
-            "exe"
-            ["do" "clean,"
-             "cljsbuild" "once,"
-             "shell" "nexe" "-f"
-             "-i" "./target/synapse.js"
-             "-o" "./target/exe/synapse-${:version}"
-             "-r" "5.9.1"
-             "-t" "./target/tmp/nexe"]
-            }
+   "native"
+   ["do" "clean," "bin," "native-mac," "native-linux"]
+
+   ;; prep release upload
+   "cp-native"
+   ["do"
+    "shell" "mkdir" "-p" "/tmp/synapse,"
+    "shell" "cp" "./target/synapse" "./target/synapse-Linux-x86_64"
+    "./target/synapse-Darwin-x86_64" "/tmp/synapse/"]
+   }
 
 
-  :cljsbuild
-  {:builds
-   [{:compiler
-     {:target :nodejs,
-      :output-to "target/synapse.js",
-      :verbose true,
-      :optimizations :simple,
-      :pretty-print true},
-     :source-paths ["src"]}]}
-
-  :bin {:name "synapse" :bootclasspath false}
+  :bin {:name "synapse"
+        :jvm-opts ["-server" "-Dfile.encoding=utf-8" "$JVM_OPTS" ]}
   )
