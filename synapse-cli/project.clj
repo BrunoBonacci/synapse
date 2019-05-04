@@ -54,11 +54,8 @@
    ["do" "clean," "bin," "native-mac," "native-linux"]
 
    ;; prep release upload
-   "cp-native"
-   ["do"
-    "shell" "mkdir" "-p" "/tmp/synapse,"
-    "shell" "cp" "./target/synapse" "./target/synapse-Linux-x86_64"
-    "./target/synapse-Darwin-x86_64" "/tmp/synapse/"]
+   "package-native"
+   ["do" "shell" "./bin/package-native.sh"]
    }
 
 
