@@ -22,6 +22,12 @@ Download the latest library version here:
 
 ## Installation
 
+  * Installation via Homebrew
+  ``` bash
+  brew tap BrunoBonacci/lazy-tools
+  brew install synapse
+  ```
+
   * Install command line tool (Native binary for Mac-OSX and Linux)
   ``` bash
   mkdir -p ~/bin
