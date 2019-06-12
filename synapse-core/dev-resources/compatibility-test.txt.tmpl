@@ -23,6 +23,14 @@ against different versions.
   %%env>>MULTI_VAR.*%%
   %%env>MULTI_VAR.*%%
 
+(*) Environment variable by common prefix
+  - lower-case with separator
+%%prefix>KAFKA_%%
+  - camel-case without separator
+%%prefix[case=camel,sep=]>CONF_%%
+  - preserve-case with underscore separator
+%%prefix[case=preserve,sep=_]>CONF2_%%
+
 
 (*) Docker enviroment variable linking
   - Single matching container with only one port

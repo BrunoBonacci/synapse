@@ -30,6 +30,7 @@
    "native-mac"
    ["shell"
     "native-image" "--report-unsupported-elements-at-runtime"
+    "--initialize-at-build-time"
     "-jar" "target/synapse-standalone.jar"
     "-H:Name=target/synapse-Darwin-x86_64" ]
 

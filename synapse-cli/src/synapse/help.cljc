@@ -66,6 +66,32 @@ Tag Specifications:
   `$ZOOKEEPER_PORT_2181_TCP` The docker resolution is the most
   commonly used so you can omit the `docker` resolver name.
 
+  %%prefix>CONF_%%
+  There are many cases where the application you trying to configure
+  has a large number of properties which can be configured and you
+  need to provide the same capability via environment variables.  In
+  this case you can prefix all the configuration variables with a
+  common prefix such as: `CONF_`, `KAFKA_`, `ZK_` etc and have
+  `synapse` to replace what follows with a property with the same name
+  and with the value of the variable
+  For example:.
+     export CONF_LOG_FLUSH_INTERVAL_MS=300000
+     export KAFKA_LOG_ROLL_HOURS=200
+  Will turn into:
+     log.flush.interval.ms=300000
+     log.roll.hours=200
+  Here the full option description:
+
+  - `case` : (default: `lower`), one of `lower`, `camel`, `preserve`.
+             `preserve` will maintain the same case as the environment
+             variable. So if you have and environment variable
+             `CONF_Foo_someOtherKey=200` and a resolver of
+             `%%prefix[case=preserve]>CONF_%%` will resolve to
+             `Foo.someOtherKey=200`
+  - `sep`  : (default: `.` dot), the separator used to replace `_`
+  - `type` : (default: `properties`), Currently it's the only
+             supported option.
+
 
   %%>zookeeper%%
   When the port  is not specified it will look  for all available port
@@ -122,6 +148,6 @@ For more information please refer to:
 
     https://github.com/BrunoBonacci/synapse
 
-Copyright © 2016 Bruno Bonacci
+  Copyright © 2016-2019 Bruno Bonacci
 Distributed under the Apache 2 License.
 ")

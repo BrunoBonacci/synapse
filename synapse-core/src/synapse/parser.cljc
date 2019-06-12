@@ -11,18 +11,24 @@
 
 (def grammar
   "
-  spec          := <'%%'> (docker-spec / env-spec) [<'||'> default-value] <'%%'>
+  spec          := <'%%'> (prefix-spec / docker-spec / env-spec) [<'||'> default-value] <'%%'>
+
+  prefix-spec   := <'prefix'> [prefix-options] <'>'> target
 
   env-spec      := [<'env'> [options] link-type] target
 
   docker-spec   := [<'docker'>] [options] link-type target
 
   options       := <'['> option ( <','> option )*  <']'>
-
   option        := addr-opt / port-opt / sep-opt
   addr-opt      := <'addr'>
   port-opt      := <'port'>
   sep-opt       := <'sep='> #'[^\\],]*'
+
+  prefix-options := <'['> option2 ( <','> option2 )*  <']'>
+  option2       := type-opt / case-opt / sep-opt
+  case-opt      := <'case='> #'lower|camel|preserve'
+  type-opt      := <'type='> #'properties'
 
   target        := #'[^>:%|]+' [':' port]
 
@@ -62,10 +68,26 @@
       (fn ([] {:separator ""})
         ([sep] {:separator (unescape sep)}))
 
+      :case-opt
+      (fn
+        [case] {:case (keyword case)})
+
+      :type-opt
+      (fn
+        [type] {:type (keyword type)})
+
       :option
       identity
 
+      :option2
+      identity
+
       :options
+      (fn [& opts]
+        {:options
+         (apply merge opts)})
+
+      :prefix-options
       (fn [& opts]
         {:options
          (apply merge opts)})
@@ -85,6 +107,10 @@
       :env-spec
       (fn [& args]
         (apply merge {:resolver :env :link-type :single} args))
+
+      :prefix-spec
+      (fn [& args]
+        (apply merge {:resolver :prefix} args))
 
       :spec
       merge}))

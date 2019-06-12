@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ "$1" != "" ] ; then
-    source $(dirname $0)//compat-test-env.sh
+    source $(dirname $0)/compat-test-env.sh
     cat $(dirname $0)/../../synapse-core/dev-resources/compatibility-test.txt.tmpl \
         | $1 2> /dev/null \
         | diff $(dirname $0)/compat-test-expected.txt --to-file - \

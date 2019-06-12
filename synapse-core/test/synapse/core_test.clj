@@ -71,6 +71,63 @@
 
 
 
+(facts "resolving environment variables using prefix resolution"
+
+
+       (resolve
+        {"PREFIX_SIMPLE" "yes"}
+        {:resolver :prefix :target "PREFIX_"})
+       => "simple=yes"
+
+
+       ;; lower case
+       (resolve
+        {"PREFIX_SIMPLE" "yes"}
+        {:resolver :prefix :target "prefix_"})
+       => "simple=yes"
+
+
+       ;; longer name
+       (resolve
+        {"PREFIX_SOME_OTHER_NAME123" "ok"}
+        {:resolver :prefix :target "PREFIX_"})
+       => "some.other.name123=ok"
+
+
+       ;; not found
+       (resolve
+        {"DIFF_SOME_OTHER_NAME123" "ok"}
+        {:resolver :prefix :target "PREFIX_"})
+       => ""
+
+
+       ;; not found 2
+       (resolve
+        {"DIFF_SOME_OTHER_NAME123" "ok"}
+        {:resolver :prefix :target "FF_"})
+       => ""
+
+
+       ;; multiple values
+       (resolve
+        {"PREFIX_VALUE1" "1"
+         "PREFIX_VALUE2" "2"
+         "PREFIX_VALUE3" "3"}
+        {:resolver :prefix :target "PREFIX_"})
+       => "value1=1\nvalue2=2\nvalue3=3"
+
+
+       ;; longer name
+       (resolve
+        {"PREFIX_SOME_OTHER_NAME123" "ok"}
+        {:resolver :prefix :target "PREFIX_" :options {:separator "" :case :camel}})
+       => "someOtherName123=ok"
+
+
+       )
+
+
+
 (facts "resolving docker links: from <cnt>_PORT_<port>_TCP_ADDR and <cnt>_PORT_<port>_TCP_PORT environment variable style"
 
 

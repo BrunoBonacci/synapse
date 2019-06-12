@@ -52,6 +52,23 @@
 
 
 
+(defmethod resolve-with-meta :prefix
+  [env-map {:keys [target options] :as spec}]
+  (let [trsf       (env/property-name-tranformer options)
+        candidates (env/candidates env-map (str "^" target ".*"))
+        resolved   (->> candidates
+                        (map (fn [[k v]] [(str/replace k (re-pattern (str "(?i)^" target)) "") v]))
+                        (map (fn [[k v]] [(trsf k) v]))
+                        (sort-by first)
+                        (map (fn [[k v]] (str k "=" v)))
+                        (str/join "\n"))]
+    (apply-default spec
+                   {:resolved resolved
+                    :resolution :ok
+                    :sources candidates})))
+
+
+
 (defmethod resolve-with-meta :docker
   [env-map {:keys [link-type target port options]
             :or {link-type :single} :as spec}]

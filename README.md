@@ -89,6 +89,30 @@ delimiter     |            port
   %%env>>ALLOWED_IP.*%%      => 172.17.0.21,172.17.3.45,172.17.1.2
   %%env>ALLOWED_IP.*%%       => 172.17.0.21
 
+  # When translating from a number of environment variables to
+  # properties with a common prefix you can use the `prefix` resolver
+  # it will find all the environment variable with this prefix and
+  # turn them into properties with the corresponding value.
+  # For example, if you have the following environment variables
+  # CONF_DATABASE_HOST=db.dev.local
+  # CONF_DATABASE_PORT=1234
+  # they can be automatically replaced into their corresponding
+  # properties with:
+  %%prefix>CONF_%%           => database.host=db.dev.local
+                                database.port=1234
+
+  # you can control the case and the separator with the following options
+  %%prefix[case=camel,sep=]>CONF_%%
+                             => databaseHost=db.dev.local
+                                databasePort=1234
+
+  # for the odd cases you can preserve the case of the variables
+  # CONF_DataBase_Host=db.dev.local
+  # CONF_DataBase_Port=1234
+  %%prefix[case=preserve]>CONF_%%
+                             => DataBase_Host=db.dev.local
+                                DataBase_Host=1234
+
 
   # When resolving docker links use the docker resolver
   %%docker>db:3306%%         => 172.17.12.21:12321
@@ -215,6 +239,65 @@ When trying to resolve an environment variable directly the `env>`
 part can be omitted so the previous tag can be written as
 `%%DATA_DIR%%`.
 
+
+#### `prefix` resolver
+
+There are many cases where the application you trying to configure
+has a large number of properties which can be configured and you
+need to provide the same capability via environment variables.
+In this case you can prefix all the configuration variables with
+a common prefix such as: `CONF_`, `KAFKA_`, `ZK_` etc and
+have `synapse` to replace what follows with a property with the same
+name and with the value of the variable.
+
+For example, if you want to set a property called `log.flush.interval.ms`
+and `log.roll.hours` but you don't want to have an entry for every
+single Kafka broker configuration option you can add in your template
+file the following resolver entry.
+
+```
+# Resolve any environment varible starting with KAFKA_
+%%prefix>KAFKA_%%
+```
+
+If the following configuration variable are present:
+
+``` bash
+export KAFKA_LOG_FLUSH_INTERVAL_MS=300000
+export KAFKA_LOG_ROLL_HOURS=200
+```
+
+it will be expanded to:
+
+```
+# Resolve any environment varible starting with KAFKA_
+log.flush.interval.ms=300000
+log.roll.hours=200
+```
+
+You can control the case with the `case` option and the
+separator with `sep` as follow:
+
+```
+# change to camel case and remove the separator
+%%prefix[case=camel,sep=]>KAFKA_%%
+
+# will resolve to
+logFlushIntervalMs=300000
+logRollHours=200
+```
+
+Here the full option description:
+
+  - `case` : (default: `lower`), one of `lower`, `camel`, `preserve`.
+             `preserve` will maintain the same case as the environment
+             variable. So if you have and environment variable
+             `CONF_Foo_someOtherKey=200` and a resolver of
+             `%%prefix[case=preserve]>CONF_%%` will resolve to
+             `Foo.someOtherKey=200`
+  - `sep`  : (default: `.` dot), the separator used to replace `_`
+  - `type` : (default: `properties`), Currently it's the only
+             supported option.
 
 #### `docker` resolver
 

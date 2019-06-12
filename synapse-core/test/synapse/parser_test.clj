@@ -63,6 +63,21 @@
       )
 
 
+(fact "prefix spec parsing"
+
+      (parse "%%prefix>KAFKA_%%")
+      => {:resolver :prefix, :target "KAFKA_"}
+
+      (parse "%%prefix[sep=.,case=lower,type=properties]>KAFKA_%%")
+      => {:resolver :prefix, :options {:separator ".", :case :lower, :type :properties}, :target "KAFKA_"}
+
+      (parse "%%prefix>ZK_%%")
+      => {:resolver :prefix, :target "ZK_"}
+
+      (parse "%%prefix[sep=,case=camel,type=properties]>ZK_%%")
+      => {:resolver :prefix, :options {:separator "", :case :camel, :type :properties}, :target "ZK_"}
+      )
+
 
 (facts "testing parser errors"
 
@@ -78,6 +93,10 @@
        (-> "%%docker]>>zoo%%" parse :error)          => :parsing
        (-> "%%docker[blah]>>zoo%%" parse :error)     => :parsing
        (-> "%%docker[addr;boo]>>zoo%%" parse :error) => :parsing
+
+       (-> "%%prefix[case=foo,type=properties]>KAFKA_%%" parse :error) => :parsing
+       (-> "%%prefix[type=bar]>KAFKA_%%" parse :error) => :parsing
+
        )
 
 

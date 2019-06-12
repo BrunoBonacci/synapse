@@ -23,6 +23,17 @@ against different versions.
   multiple,env-var,matched
   env-var
 
+(*) Environment variable by common prefix
+  - lower-case with separator
+log.flush.interval.ms=300000
+log.roll.hours=200
+  - camel-case without separator
+logFlushIntervalMs=300000
+logRollHours=200
+  - preserve-case with underscore separator
+log_flUsh_intErvAl_ms=300000
+log_roLL_hours=200
+
 
 (*) Docker enviroment variable linking
   - Single matching container with only one port
