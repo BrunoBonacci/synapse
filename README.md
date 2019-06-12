@@ -382,6 +382,6 @@ a vector of the configuration or `nil` and the error (as `[ config error ]`).
 
 ## License
 
-Copyright © 2016 Bruno Bonacci
+Copyright © 2016-2019 Bruno Bonacci
 
 Distributed under the Apache 2 License.

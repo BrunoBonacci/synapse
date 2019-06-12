@@ -1,7 +1,14 @@
 # Synapse Changelog
 
-## Release v0.3.4 (2016-06-22)
-  * CLI - compile with alpine linux 3.3 + musl in fully static to avoid libc++ compat warning.
+## Release v0.4.0 (2019-06-12)
+  * added prefix resolver
+
+## Release v0.4.0 (2019-04-28)
+  * Build native binary with GraalVM
+
+## Release v0.3.4 (2016-04-22)
+  * CLI - compile with alpine linux 3.3 + musl in fully static to
+    avoid libc++ compat warning.
 
 ## Release v0.3.3 (2016-03-09)
   * CORE: re-quote-pattern requires different patterns Java/Javascript :-(
